@@ -1,12 +1,12 @@
 require "test_helper"
 
-class PullerTest < Test::Unit::TestCase
-  context "A puller" do
+class SaverTest < Test::Unit::TestCase
+  context "A saver" do
     setup do
-      @p = Puller.new
+      @s = Saver.new
     end
     should "be able to be created" do
-      @p.inspect
+      @s.inspect
     end    
   end
   
