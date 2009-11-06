@@ -9,8 +9,14 @@
 # - 
 
 class Saver
-  def initialize(rules)
+  def initialize(result_type, rules)
+    @result_type = result_type
     @rules = rules
-  
   end
+  
+TWEET_SAVER = lambda do |result|
+
+
+end
+  
 end
