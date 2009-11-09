@@ -1,0 +1,7 @@
+production:
+  adapter: postgresql
+  encoding: utf8
+  reconnect: false
+  database: trial
+  username: evanburchard
+  password: per1fail
