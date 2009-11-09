@@ -17,5 +17,6 @@ end
 
 task :connect do
   ActiveRecord::Base.establish_connection(YAML::load(File.open("config/database.yml"))['production'])
-
+  ActiveRecord::Base.logger = Logger.new(File.open('database.log', 'a'))
+  
 end
