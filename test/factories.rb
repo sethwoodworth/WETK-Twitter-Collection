@@ -7,3 +7,7 @@ Factory.define :tweet do |t|
     t.from_user "aplusk"
     t.status_id 3982929       
 end
+
+Factory.define :twitter_account do |t|
+    t.screen_name "User46"
+end
