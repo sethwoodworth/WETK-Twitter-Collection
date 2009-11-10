@@ -33,7 +33,7 @@ ActiveRecord::Schema.define(:version => 0) do
     t.integer :utc_offset
     t.string :time_zone
     t.string :profile_background_image_url
-    t.boolean :profile_background_tile
+    t.boolean :profile_background_title
     t.integer :statuses_count
     t.boolean :notifications
     t.boolean :verified
