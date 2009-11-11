@@ -18,32 +18,32 @@ class PullerTest < Test::Unit::TestCase
       
     end
     
-     should "be able to pull an array of user ids from twitter for a given user_id" do
-        @results = @p.pull({:user_id => 15019521}, &FOLLOWER_IDS_PULL)
-        assert_equal @results.class, Array
-        assert_equal @results.first.class, Fixnum
+    should "be able to pull an array of user ids from twitter for a given user_id" do
+      @results = @p.pull({:user_id => 15019521}, &FOLLOWER_IDS_PULL)
+      assert_equal @results.class, Array
+      assert_equal @results.first.class, Fixnum
 
-      end
+    end
       
-       should "be able to pull valid json of friends from twitter for a given user_id" do
-          @results = @p.pull({:user_id => 15019521}, &FRIENDS_PULL)
-          assert_equal @results.first.keys.sort, @user_info_keys_sorted
-        end
+    should "be able to pull valid json of friends from twitter for a given user_id" do
+      @results = @p.pull({:user_id => 15019521}, &FRIENDS_PULL)
+      assert_equal @results.first.keys.sort, @user_info_keys_sorted
+    end
         
-         should "be able to pull an array of friend IDs from twitter for a given user_id" do
-            @results = @p.pull({:user_id => 15019521}, &FRIEND_IDS_PULL)
-            assert_equal @results.class, Array
-            assert_equal @results.first.class, Fixnum
-          end
+    should "be able to pull an array of friend IDs from twitter for a given user_id" do
+      @results = @p.pull({:user_id => 15019521}, &FRIEND_IDS_PULL)
+      assert_equal @results.class, Array
+      assert_equal @results.first.class, Fixnum
+    end
     
     context "with a :search_query value in its rules attribute" do
       setup do
         @p.rules = {:search_query => 'test'}
       end
     
-      should "be able to pull valid json from twitter search" do
+      should "results from twitter search should be particular fields" do
         results = @p.pull({}, &SEARCH_PULL)
-        assert_equal results.keys, ["results", "max_id", "since_id", "refresh_url", "next_page", "results_per_page", "page", "completed_in", "query"]
+        assert_same_elements results.keys, ["results", "max_id", "since_id", "refresh_url", "next_page", "results_per_page", "page", "completed_in", "query"]
       end
     end
   
