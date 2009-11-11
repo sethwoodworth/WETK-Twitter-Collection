@@ -21,10 +21,19 @@ class SaverTest < Test::Unit::TestCase
       end
     
       should "allow the user to be saved" do
-        setup do
-          assert_equal @twitter_account.text, User.find_by_text(@twitter_account.text).text
-        end        
+        assert_equal @twitter_account.screen_name, TwitterAccount.find_by_screen_name(@twitter_account.screen_name).screen_name
       end
     end
+    context "when saving a call" do
+      setup do
+        @call = Factory.build(:call)
+        @saver.save(@call, &CALL_SAVE)        
+      end
+    
+      should "allow the call to be saved" do
+        assert_equal @call.query, Call.find_by_query(@call.query).query
+      end
+    end
+    
   end
 end

@@ -69,3 +69,33 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
                         
   twitter_account.save
 end
+CALL_SAVE = lambda do |call_to_save, rules|
+call = Call.new(:query => call_to_save.query,
+                :completed_in =>  call_to_save.completed_in,
+                :since_id => call_to_save.since_id,
+                :max_id => call_to_save.max_id,
+                :refresh_url => call_to_save.refresh_url,
+                :results_per_page => call_to_save.results_per_page,
+                :next_page => call_to_save.next_page,
+                :page => call_to_save.page,
+                :api => call_to_save.api_id)
+  call.save
+end
+# 
+# RELATIONSHIP_SAVE = lambda do |user_to_save, rules|
+# 
+# end
+# 
+# REACTION_SAVE = lambda do |user_to_save, rules|
+# 
+# end
+# 
+# TREND_SAVE = lambda do |user_to_save, rules|
+# 
+# end
+# LANGUAGE_SAVE = lambda do |user_to_save, rules|
+# 
+# end
+# LIST_SAVE = lambda do |user_to_save, rules|
+# 
+# end
