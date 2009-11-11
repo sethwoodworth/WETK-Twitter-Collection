@@ -3,7 +3,8 @@ require "test_helper"
 class SaverTest < Test::Unit::TestCase
   context "A default saver" do
     setup do
-      @saver = Saver.new
+      @saver = Factory.build(:saver)
+      
     end
     context "when saving a unique tweet" do
       setup do

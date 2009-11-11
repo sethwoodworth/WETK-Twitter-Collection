@@ -32,6 +32,9 @@ TWEET_SAVE = lambda do |tweet_to_save, rules|
                    :from_user  => tweet_to_save.from_user,
                    :status_id  => tweet_to_save.status_id
                     )
+
+#  rules['tag'] ? tweet.tags << rules['tag'] : nil
+
   tweet.save
   #If not in DB
   #Active record save
@@ -66,6 +69,7 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
                         :verified => twitter_account_to_save.verified,
                         :twitter_id_for_search => twitter_account_to_save.twitter_id_for_search 
                         )
+#  rules['tag'] ? twitter_account.tags << rules['tag'] : nil
                         
   twitter_account.save
 end
@@ -79,6 +83,8 @@ call = Call.new(:query => call_to_save.query,
                 :next_page => call_to_save.next_page,
                 :page => call_to_save.page,
                 :api => call_to_save.api_id)
+#  rules['tag'] ? call.tags << rules['tag'] : nil
+                
   call.save
 end
 # 
