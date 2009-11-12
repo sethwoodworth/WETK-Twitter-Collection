@@ -1,11 +1,11 @@
-Factory.define :saver do |s|
-  s.rules {}
+Factory.sequence :status_id do |n|
+  "1432#{n}".to_i
 end
 
 Factory.define :tweet do |t|
     t.text "Someting to tweet about"
     t.from_user "aplusk"
-    t.status_id 3982929       
+    t.status_id {Factory.next(:status_id)}       
 end
 
 Factory.define :twitter_account do |tw|
