@@ -6,11 +6,10 @@
 # Similarities within the saver class: 
 # - all recieve an object
 # - all receive a rule set
-
 class Saver
   attr_accessor :rules
   
-  def initialize(rules={:check_validation => false, :create_relationships => false, :language_detect => false, :tag => nil})
+  def initialize(rules = {:check_validation => false, :create_relationships => false, :language_detect => false, :tag => nil})
     @rules = rules
   end
 
@@ -33,7 +32,7 @@ TWEET_SAVE = lambda do |tweet_to_save, rules|
                    :status_id  => tweet_to_save.status_id
                     )
 
-#  rules['tag'] ? tweet.tags << rules['tag'] : nil
+  rules[:tag] ? tweet.tag_list << rules[:tag] : nil
 
   tweet.save
   #If not in DB
@@ -69,7 +68,6 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
                         :verified => twitter_account_to_save.verified,
                         :twitter_id_for_search => twitter_account_to_save.twitter_id_for_search 
                         )
-#  rules['tag'] ? twitter_account.tags << rules['tag'] : nil
                         
   twitter_account.save
 end
@@ -83,7 +81,8 @@ call = Call.new(:query => call_to_save.query,
                 :next_page => call_to_save.next_page,
                 :page => call_to_save.page,
                 :api => call_to_save.api_id)
-#  rules['tag'] ? call.tags << rules['tag'] : nil
+
+
                 
   call.save
 end
