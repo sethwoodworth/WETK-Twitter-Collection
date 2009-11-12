@@ -37,8 +37,9 @@ end
 
 SEARCH_PULL = lambda do |rules, options, base|
   @results = Twitter::Search.new(rules[:search_query], options).per_page(100).fetch
-  @results.results.each do |tweet|
-    $SAVER.save(tweet, &TWEET_SAVE)
+  @results.results.each do |result|
+    result.status_id = result.id        
+    $SAVER.save(result, &TWEET_SAVE)
   end
   @results
 end
