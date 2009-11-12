@@ -8,12 +8,16 @@ Factory.define :tweet do |t|
     t.status_id {Factory.next(:status_id)}       
 end
 
+Factory.sequence :screen_name do |n|
+  "User#{n}"
+end
+
 Factory.define :twitter_account do |tw|
-    tw.screen_name "User46"
+    tw.screen_name {Factory.next(:screen_name)}
 end
 
 Factory.define :call do |c|
-  c.query "User46"
+  c.query {Factory.next(:screen_name)}
   c.completed_in 32324
   c.since_id 32423
   c.max_id 34234

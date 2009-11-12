@@ -6,6 +6,7 @@
 # Similarities within the saver class: 
 # - all recieve an object
 # - all receive a rule set
+require 'ruby-debug'
 class Saver
   attr_accessor :rules
   
@@ -68,8 +69,10 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
                         :verified => twitter_account_to_save.verified,
                         :twitter_id_for_search => twitter_account_to_save.twitter_id_for_search 
                         )
-                        
+
+  rules[:tag] ? twitter_account.tag_list << rules[:tag] : nil
   twitter_account.save
+
 end
 CALL_SAVE = lambda do |call_to_save, rules|
 call = Call.new(:query => call_to_save.query,
@@ -83,6 +86,7 @@ call = Call.new(:query => call_to_save.query,
                 :api => call_to_save.api_id)
 
 
+  rules[:tag] ? call.tag_list << rules[:tag] : nil
                 
   call.save
 end

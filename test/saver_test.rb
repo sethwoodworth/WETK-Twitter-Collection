@@ -7,31 +7,34 @@ class SaverTest < Test::Unit::TestCase
     end
     context "when saving a unique tweet" do
       setup do
+        @tweet_size = Tweet.all.size
         @tweet = Factory.build(:tweet)
         @saver.save(@tweet, &TWEET_SAVE)
       end
       should "allow the tweet to be saved" do
-          assert_equal @tweet.text, Tweet.find_by_text(@tweet.text).text
+          assert_equal @tweet_size+1, Tweet.all.size
       end
     end
     context "when saving a unique user" do
       setup do
+        @twitter_account_size = TwitterAccount.all.size
         @twitter_account = Factory.build(:twitter_account)
         @saver.save(@twitter_account, &TWITTER_ACCOUNT_SAVE)        
       end
     
       should "allow the user to be saved" do
-        assert_equal @twitter_account.screen_name, TwitterAccount.find_by_screen_name(@twitter_account.screen_name).screen_name
+        assert_equal @twitter_account_size+1, TwitterAccount.all.size
       end
     end
     context "when saving a call" do
       setup do
+        @call_size = Call.all.size
         @call = Factory.build(:call)
         @saver.save(@call, &CALL_SAVE)        
       end
     
       should "allow the call to be saved" do
-        assert_equal @call.query, Call.find_by_query(@call.query).query
+        assert_equal @call_size+1, Call.all.size
       end
     end
     
@@ -49,30 +52,31 @@ class SaverTest < Test::Unit::TestCase
         @saver.save(@tweet, &TWEET_SAVE)
       end
       
-      should "have the tag saved in the tweet" do
+      should "have the tag soved on the tweet" do
         assert_contains Tweet.find_by_status_id(@tweet.status_id).tag_list, @rules[:tag]         
       end
     end
-    # context "when saving a unique user" do
-    #   setup do
-    #     @twitter_account = Factory.build(:twitter_account)
-    #     @saver.save(@twitter_account, &TWITTER_ACCOUNT_SAVE)        
-    #   end
-    # 
-    #   should "allow the user to be saved" do
-    #     assert_equal @twitter_account.screen_name, TwitterAccount.find_by_screen_name(@twitter_account.screen_name).screen_name
-    #   end
-    # end
-    # context "when saving a call" do
-    #   setup do
-    #     @call = Factory.build(:call)
-    #     @saver.save(@call, &CALL_SAVE)        
-    #   end
-    # 
-    #   should "allow the call to be saved" do
-    #     assert_equal @call.query, Call.find_by_query(@call.query).query
-    #   end
-    # end
+
+    context "when saving a unique user" do
+      setup do
+        @twitter_account = Factory.build(:twitter_account)
+        @saver.save(@twitter_account, &TWITTER_ACCOUNT_SAVE)        
+      end
+    
+      should "allow the user to be tagged" do
+        assert_contains TwitterAccount.find_by_screen_name(@twitter_account.screen_name).tag_list, @rules[:tag]         
+      end
+    end
+    context "when saving a call" do
+      setup do
+        @call = Factory.build(:call)
+        @saver.save(@call, &CALL_SAVE)        
+      end
+    
+      should "allow the call to be saved" do
+        assert_contains Call.find_by_query(@call.query).tag_list, @rules[:tag]         
+      end
+    end
     
   end
   
