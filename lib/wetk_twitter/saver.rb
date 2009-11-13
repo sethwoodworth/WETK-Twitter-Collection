@@ -90,14 +90,46 @@ call = Call.new(:query => call_to_save.query,
                 
   call.save
 end
-# 
-# RELATIONSHIP_SAVE = lambda do |user_to_save, rules|
-# 
-# end
-# 
-# REACTION_SAVE = lambda do |user_to_save, rules|
-# 
-# end
+
+RELATIONSHIP_SAVE = lambda do |users_to_save, rules|
+#users_to_save should be a twitter_relationship object in the form {:user => {db style user info}, :follower {db style user info}}
+#(db style meaning the fields that are in the schema)
+#That said, I'm not sure what is convenient to hand off from puller
+
+  follower = users_to_save[:follower]
+  friend = users_to_save[:friend]
+  #if it is a hash, convert to object
+  # Check for id (OUR ID NOT TWITTER'S) (assume it's in db if it's present)
+  if follower.id 
+  else
+    # Check to see if user exists in db or create new **Skip the check if the db does an auto check for doubles on create
+    # Create by screenname?  account_id?  
+    follower = TwitterAccount.find_or_create_by_screen_name(follower.screen_name)
+  end
+  friend = users_to_save[:friend]
+  #create a new twitter_relationship 
+  twitter_relationship = TwitterRelationship.new(:follower_id => follower.id, :friend_id => friend.id)
+
+  rules[:tag] ? twitter_relationship.tag_list << rules[:tag] : nil
+  # twitter_relationship.tag_list << "relationship #{rules[:relationship_tag]}"
+  twitter_relationship.save
+
+  #tag relationship  
+  #prepend tag with date?  Always tag by date? 
+  #rules[:tag] ? twitter_relationship.tag_list << rules[:tag] : nil
+
+
+end
+
+
+
+REACTION_SAVE = lambda do |reaction_to_save, rules|
+
+  reaction = reaction_to_save
+  
+  rules[:tag] ? reaction.tag_list << rules[:tag] : nil
+  reaction.save
+end
 # 
 # TREND_SAVE = lambda do |user_to_save, rules|
 # 
