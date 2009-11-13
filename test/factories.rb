@@ -35,3 +35,16 @@ Factory.define :api do |a|
    a.username "fkjlsd"
    a.password "lfksjf"
 end
+
+Factory.define :tweet_reaction do |tr|
+   tr.reaction {Factory.create(:reaction)}
+   tr.tweet {Factory.create(:tweet)}
+   tr.responder {Factory.create(:twitter_account)}
+   tr.initiator {Factory.create(:twitter_account)}
+end
+
+Factory.define :reaction do |r|
+   r.reaction_type "at mention"
+   r.value 0.6
+end
+
