@@ -37,6 +37,29 @@ class SaverTest < Test::Unit::TestCase
         assert_equal @call_size+1, Call.all.size
       end
     end
+    context "when saving a relationship" do
+      setup do
+        @twitter_relationship_size = TwitterRelationship.all.size
+        @friend = Factory.create(:twitter_account)
+        @follower = Factory.create(:twitter_account)
+        @saver.save(:friend => @friend, :follower => @follower, &RELATIONSHIP_SAVE)        
+      end
+    
+      should "allow the relationship to be saved" do
+        assert_equal @twitter_relationship_size+1, TwitterRelationship.all.size
+      end
+    end
+    context "when saving a tweet_reaction" do
+      setup do
+        @tweet_reaction_size = TweetReaction.all.size
+        @reaction = Factory.build(:tweet_reaction)
+        @saver.save(@reaction, &REACTION_SAVE)        
+      end
+    
+      should "allow the reaction to be saved" do
+        assert_equal @tweet_reaction_size+1, TweetReaction.all.size
+      end
+    end
     
   end
 
@@ -73,8 +96,29 @@ class SaverTest < Test::Unit::TestCase
         @saver.save(@call, &CALL_SAVE)        
       end
     
-      should "allow the call to be saved" do
+      should "allow the call to be tagged" do
         assert_contains Call.find_by_query(@call.query).tag_list, @rules[:tag]         
+      end
+    end
+    context "when saving a relationship" do
+      setup do
+        @friend = Factory.create(:twitter_account)
+        @follower = Factory.create(:twitter_account)
+        @saver.save(:friend => @friend, :follower => @follower, &RELATIONSHIP_SAVE)        
+      end
+    
+      should "allow the relationship to be tagged" do
+        assert_contains TwitterRelationship.last.tag_list, @rules[:tag]         
+      end
+    end
+    context "when saving a tweet_reaction" do
+      setup do
+        @reaction = Factory.build(:tweet_reaction)
+        @saver.save(@reaction, &REACTION_SAVE)        
+      end
+    
+      should "allow the reaction to be tagged" do
+        assert_contains TweetReaction.last.tag_list, @rules[:tag]         
       end
     end
     
