@@ -1,14 +1,15 @@
 class Puller
   attr_accessor :rules, :base
     
-    def initialize(rules = {:user_id => nil, :search_query => nil}, base = nil)
-      @rules = rules
+    def initialize(base = nil)
       @base = base
     end
     
-    def pull(options = {}, &pull_type)
+    def pull(rules, &pull_type)
       # begin
-        pull_type.call(@rules, options, @base)
+        @rules = rules.dup
+        @rules[:user_agent] = "Web_Ecology_Project"
+        pull_type.call(@rules, @base)
       # rescue Twitter::Unavailable
       #          raise Twitter::Unavailable
       #       rescue Twitter::NotFound
@@ -35,8 +36,10 @@ class Puller
     
 end
 
-SEARCH_PULL = lambda do |rules, options, base|
-  @results = Twitter::Search.new(rules[:search_query], options).per_page(100).fetch
+
+SEARCH_PULL = lambda do |rules, base|
+  @search_query = rules.delete(:search_query)
+  @results = Twitter::Search.new(@search_query, rules).per_page(100).fetch
   @results.results.each do |result|
     result.status_id = result.id        
     $SAVER.save(result, &TWEET_SAVE)
@@ -44,47 +47,48 @@ SEARCH_PULL = lambda do |rules, options, base|
   @results
 end
 
-USER_PULL = lambda do |rules, options, base|
-  @results = base.user(rules[:user_id],options)
+USER_PULL = lambda do |rules, base|
+  @user_id = rules.delete(:user_id)
+  @results = base.user(@user_id, rules)  
   $SAVER.save(@results, &TWITTER_ACCOUNT_SAVE)
   @results
 end
 
-FOLLOWERS_PULL = lambda do |rules, options, base|
-  @results = base.followers(options)
+FOLLOWERS_PULL = lambda do |rules, base|
+  @results = base.followers(rules)
   @results.users.each do
     #send follower info (and user id?) to Saver
   end
   @results
 end
 
-FOLLOWER_IDS_PULL = lambda do |rules, options, base|
-  @results = base.follower_ids(options)
+FOLLOWER_IDS_PULL = lambda do |rules, base|
+  @results = base.follower_ids(rules)
   @results.each do
     #send follower id (and user id?) to Saver
   end
   @results
 end
 
-FRIENDS_PULL = lambda do |rules, options, base|
-  @results = base.friends(options)
+FRIENDS_PULL = lambda do |rules, base|
+  @results = base.friends(rules)
   @results.users.each do
     #send friend info (and user id?) to Saver
   end
   @results
 end
 
-FRIEND_IDS_PULL = lambda do |rules, options, base|
-  @results = base.friend_ids(options)
+FRIEND_IDS_PULL = lambda do |rules, base|
+  @results = base.friend_ids(rules)
   @results.each do
     #send follower id (and user id?) to Saver
   end
   @results
 end
 
-USER_TWEETS_PULL = lambda do |rules, options, base|
-  options[:count] = 200
-  @results = base.user_timeline(options)
+USER_TWEETS_PULL = lambda do |rules, base|
+  rules[:count] = 200
+  @results = base.user_timeline(rules)
   @results.each do
     #send user tweet to saver
   end

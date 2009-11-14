@@ -5,7 +5,7 @@ class PullerTest < Test::Unit::TestCase
     setup do
       $SAVER = Saver.new
       @base = Twitter::Base.new(Twitter::HTTPAuth.new('sam1vp', 'twAg60307', :user_agent => 'web_ecology_project'))
-      @p = Puller.new({}, @base)
+      @p = Puller.new(@base)
       @user_info_keys = ["created_at", "description", "favourites_count", "followers_count", "following", "friends_count", "geo_enabled", "id", "location", "name", "notifications", "profile_background_color", "profile_background_image_url", "profile_background_tile", "profile_image_url", "profile_link_color", "profile_sidebar_border_color", "profile_sidebar_fill_color", "profile_text_color", "protected", "screen_name", "status", "statuses_count", "time_zone", "url", "utc_offset", "verified"]
     end
   
@@ -42,27 +42,17 @@ class PullerTest < Test::Unit::TestCase
       assert_same_elements @results.first.keys, ["created_at", "truncated", "favorited", "text", "id", "geo", "in_reply_to_user_id", "in_reply_to_screen_name", "source", "user", "in_reply_to_status_id"]
     end
     
-    context "with a :search_query value in its rules attribute" do
-      setup do
-        @p.rules = {:search_query => 'test'}
-      end
-    
-      should "be able to pull a hash from twitter_search with particular fields" do
-        results = @p.pull({}, &SEARCH_PULL)
-        assert_same_elements results.keys, ["results", "max_id", "since_id", "refresh_url", "next_page", "results_per_page", "page", "completed_in", "query"]
-      end
-    end
   
-    context "with a :user_id value in its rules attribute" do 
-      setup do 
-        @p.rules = {:user_id => 15019521}
-      end
-    
-      should "be able to pull info from twitter for that user" do
-        results = @p.pull({}, &USER_PULL)
-        assert_same_elements results.keys, @user_info_keys
-        assert_equal results.screen_name, 'sam1vp'
-      end
+    should "be able to pull a hash from twitter_search with particular fields" do
+      results = @p.pull({:search_query => 'test'}, &SEARCH_PULL)
+      assert_same_elements results.keys, ["results", "max_id", "since_id", "refresh_url", "next_page", "results_per_page", "page", "completed_in", "query"]
     end
+    
+    should "be able to pull info from twitter for a user" do
+      results = @p.pull({:user_id => 15019521}, &USER_PULL)
+      assert_same_elements results.keys, @user_info_keys
+      assert_equal results.screen_name, 'sam1vp'
+    end
+
   end
 end
