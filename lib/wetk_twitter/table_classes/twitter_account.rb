@@ -12,4 +12,9 @@ class TwitterAccount < ActiveRecord::Base
                           :class_name => 'TwitterRelationship',
                           :dependent => :destroy
   has_many :followers, :through => :followerships     
+  
+  def self.convert_from_hash(hash)
+  
+  end  
+
 end

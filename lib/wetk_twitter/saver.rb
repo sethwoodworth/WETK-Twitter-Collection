@@ -92,28 +92,37 @@ call = Call.new(:query => call_to_save.query,
 end
 
 RELATIONSHIP_SAVE = lambda do |users_to_save, rules|
-#users_to_save should be a twitter_relationship object in the form {:user => {db style user info}, :follower {db style user info}}
-#(db style meaning the fields that are in the schema)
-#That said, I'm not sure what is convenient to hand off from puller
 
+
+  users_to_save.each_key do |k|
+    if k.kind_of?(Hash)
+      users_to_save[k] = TwitterAccount.convert_from_hash(users_to_save[k])
+    end
+  end
   follower = users_to_save[:follower]
-  friend = users_to_save[:friend]
-  #if it is a hash, convert to object
+  friend = users_to_save[:friend]      
+  
+  #if it is a hash, convert to object through table_class method
   # Check for id (OUR ID NOT TWITTER'S) (assume it's in db if it's present)
   if follower.id 
   else
     # Check to see if user exists in db or create new **Skip the check if the db does an auto check for doubles on create
-    # Create by screenname?  account_id?  
     follower = TwitterAccount.find_or_create_by_screen_name(follower.screen_name)
   end
-  friend = users_to_save[:friend]
+
+  if friend.id 
+  else
+    # Check to see if user exists in db or create new **Skip the check if the db does an auto check for doubles on create
+    friend = TwitterAccount.find_or_create_by_screen_name(friend.screen_name)
+  end
+  
   #create a new twitter_relationship 
   twitter_relationship = TwitterRelationship.new(:follower_id => follower.id, :friend_id => friend.id)
 
   rules[:tag] ? twitter_relationship.tag_list << rules[:tag] : nil
-  # twitter_relationship.tag_list << "relationship #{rules[:relationship_tag]}"
   twitter_relationship.save
-
+  debugger
+  nil
   #tag relationship  
   #prepend tag with date?  Always tag by date? 
   #rules[:tag] ? twitter_relationship.tag_list << rules[:tag] : nil
@@ -124,19 +133,57 @@ end
 
 
 REACTION_SAVE = lambda do |reaction_to_save, rules|
-
-  reaction = reaction_to_save
+  if reaction_to_save.kind_of?(Hash)
+    reaction_to_save.each_key do |k|
+      if k.kind_of?(Hash)
+        if users_to_save[k] == :tweet 
+          users_to_save[k] = Tweet.convert_from_hash(users_to_save[k]) 
+        else 
+          users_to_save[k] = TwitterAccount.convert_from_hash(users_to_save[k])
+        end
+      end
+    end
+  end
   
-  rules[:tag] ? reaction.tag_list << rules[:tag] : nil
-  reaction.save
+  
+  initiator = reaction_to_save[:initiator]
+  responder = reaction_to_save[:responder]
+  tweet = reaction_to_save[:tweet]
+  #if it is a hash, convert to object through table_class method
+
+  # Check for id (OUR ID NOT TWITTER'S) (assume it's in db if it's present)
+  if initiator.id 
+  else
+    # Check to see if user exists in db or create new **Skip the check if the db does an auto check for doubles on create
+    initiator = TwitterAccount.find_or_create_by_screen_name(initiator.screen_name)
+  end
+
+  if responder.id 
+  else
+    # Check to see if user exists in db or create new **Skip the check if the db does an auto check for doubles on create
+    responder = TwitterAccount.find_or_create_by_screen_name(responder.screen_name)
+  end
+
+  if tweet.id 
+  else
+    # Check to see if user exists in db or create new **Skip the check if the db does an auto check for doubles on create
+    tweet = TwitterAccount.find_or_create_by_status_id(tweet.status_id)
+  end
+  
+  #create a new twitter_relationship 
+  tweet_reaction = TweetReaction.new(:tweet_id => tweet.id, :initiator_id => initiator.id, :responder_id  => responder.id)
+
+  
+  rules[:tag] ? tweet_reaction.tag_list << rules[:tag] : nil
+  tweet_reaction.save
 end
 # 
-# TREND_SAVE = lambda do |user_to_save, rules|
+# TREND_SAVE = lambda do |trend_to_save, rules|
 # 
 # end
-# LANGUAGE_SAVE = lambda do |user_to_save, rules|
+# LANGUAGE_SAVE = lambda do |tweet_language_to_save, rules|
 # 
 # end
-# LIST_SAVE = lambda do |user_to_save, rules|
+# LIST_SAVE = lambda do |list_to_save, rules|
 # 
 # end

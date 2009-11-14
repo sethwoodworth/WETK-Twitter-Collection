@@ -52,8 +52,8 @@ class SaverTest < Test::Unit::TestCase
     context "when saving a tweet_reaction" do
       setup do
         @tweet_reaction_size = TweetReaction.all.size
-        @reaction = Factory.build(:tweet_reaction)
-        @saver.save(@reaction, &REACTION_SAVE)        
+        @tweet_reaction = Factory.build(:tweet_reaction)
+        @saver.save(@tweet_reaction, &REACTION_SAVE)        
       end
     
       should "allow the reaction to be saved" do
@@ -113,8 +113,8 @@ class SaverTest < Test::Unit::TestCase
     end
     context "when saving a tweet_reaction" do
       setup do
-        @reaction = Factory.build(:tweet_reaction)
-        @saver.save(@reaction, &REACTION_SAVE)        
+        @tweet_reaction = Factory.build(:tweet_reaction)
+        @saver.save(@tweet_reaction, &REACTION_SAVE)        
       end
     
       should "allow the reaction to be tagged" do
