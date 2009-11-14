@@ -6,7 +6,6 @@
 # Similarities within the saver class: 
 # - all recieve an object
 # - all receive a rule set
-require 'ruby-debug'
 class Saver
   attr_accessor :rules
   
@@ -121,8 +120,6 @@ RELATIONSHIP_SAVE = lambda do |users_to_save, rules|
 
   rules[:tag] ? twitter_relationship.tag_list << rules[:tag] : nil
   twitter_relationship.save
-  debugger
-  nil
   #tag relationship  
   #prepend tag with date?  Always tag by date? 
   #rules[:tag] ? twitter_relationship.tag_list << rules[:tag] : nil
