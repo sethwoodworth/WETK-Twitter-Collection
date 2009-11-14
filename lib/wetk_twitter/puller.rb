@@ -36,11 +36,12 @@ class Puller
     
 end
 
+
 SEARCH_PULL = lambda do |rules, base|
   @search_query = rules.delete(:search_query)
   @results = Twitter::Search.new(@search_query, rules).per_page(100).fetch
   @results.results.each do |result|
-    result.status_id = result.id
+    result.status_id = result.id        
     $SAVER.save(result, &TWEET_SAVE)
   end
   @results

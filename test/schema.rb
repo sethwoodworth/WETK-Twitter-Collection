@@ -39,7 +39,6 @@ ActiveRecord::Schema.define(:version => 0) do
     t.boolean :verified
     t.timestamps
   end
-  change_column :twitter_accounts, :id, :integer, :limit => 8
   
   create_table :tweets do |t|
     t.string :text, :null => false
@@ -57,9 +56,8 @@ ActiveRecord::Schema.define(:version => 0) do
 
     t.timestamps
   end
-  change_column :tweets, :id, :integer, :limit => 8  
 
-  create_table :apis do |t|
+  create_table :apis do  |t|
     t.string :domain
     t.string :name
     t.text :description
@@ -70,7 +68,7 @@ ActiveRecord::Schema.define(:version => 0) do
     t.timestamps
   end
 
-  create_table :calls do |t|
+  create_table :calls do  |t|
     t.text :query
     t.float :completed_in
   
@@ -84,9 +82,8 @@ ActiveRecord::Schema.define(:version => 0) do
     t.integer :api_id, :limit => 8
     t.timestamps      
   end
-  change_column :calls, :id, :integer, :limit => 8
     
-  create_table :languages do |t|
+  create_table :languages do  |t|
     t.string :english_name_of_language
     t.string :iso_639_1
     t.string :iso_639_2
@@ -95,18 +92,17 @@ ActiveRecord::Schema.define(:version => 0) do
     
   end
 
-  create_table :trends do |t|
+  create_table :trends do  |t|
     t.string :topic
     
     t.timestamps
   end
-  change_column :trends, :id, :integer, :limit => 8
 
-  create_table :tags do |t|
+  create_table :tags do  |t|
     t.column :name, :string
   end
   
-  create_table :taggings do |t|
+  create_table :taggings do  |t|
     t.column :tag_id, :integer
     t.column :taggable_id, :integer
     t.column :tagger_id, :integer
@@ -118,22 +114,20 @@ ActiveRecord::Schema.define(:version => 0) do
     t.column :created_at, :datetime
   end
 
-  create_table :twitter_relationships do |t|
+  create_table :twitter_relationships do  |t|
     t.integer :follower_id, :null => false, :dependent => :destroy, :limit => 8
     t.integer :friend_id, :null => false, :dependent => :destroy, :limit => 8
     t.boolean :current
     t.timestamps      
   end
-  change_column :twitter_relationships, :id, :integer, :limit => 8
 
-  create_table :confidences do |t|
+  create_table :confidences do  |t|
     t.integer :twitter_account_id, :dependent => :destroy, :limit => 8
     t.integer :tweet_id, :dependent => :destroy, :limit => 8
     t.integer :language_id, :dependent => :destroy
     t.float :confidence
     t.timestamps
   end
-  change_column :confidences, :id, :integer, :limit => 8
 
   create_table :calls_twitter_accounts, :id => false do |t|
     t.integer :call_id, :null => false, :dependent => :destroy, :limit => 8
@@ -160,7 +154,7 @@ ActiveRecord::Schema.define(:version => 0) do
     t.integer :twitter_account_id, :null => false, :dependent => :destroy, :limit => 8
   end
 
-  create_table :reactions do |t|
+  create_table :reactions do  |t|
     t.string :reaction_type, :limit => 20
     t.float :value
   end

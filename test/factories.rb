@@ -1,19 +1,23 @@
-Factory.define :saver do |s|
-  s.rules {}
+Factory.sequence :status_id do |n|
+  "1432#{n}".to_i
 end
 
 Factory.define :tweet do |t|
     t.text "Someting to tweet about"
     t.from_user "aplusk"
-    t.status_id 3982929       
+    t.status_id {Factory.next(:status_id)}       
+end
+
+Factory.sequence :screen_name do |n|
+  "User#{n}"
 end
 
 Factory.define :twitter_account do |tw|
-    tw.screen_name "User46"
+    tw.screen_name {Factory.next(:screen_name)}
 end
 
 Factory.define :call do |c|
-  c.query "User46"
+  c.query {Factory.next(:screen_name)}
   c.completed_in 32324
   c.since_id 32423
   c.max_id 34234
@@ -31,3 +35,16 @@ Factory.define :api do |a|
    a.username "fkjlsd"
    a.password "lfksjf"
 end
+
+Factory.define :tweet_reaction do |tr|
+   tr.reaction {Factory.create(:reaction)}
+   tr.tweet {Factory.create(:tweet)}
+   tr.responder {Factory.create(:twitter_account)}
+   tr.initiator {Factory.create(:twitter_account)}
+end
+
+Factory.define :reaction do |r|
+   r.reaction_type "at mention"
+   r.value 0.6
+end
+
