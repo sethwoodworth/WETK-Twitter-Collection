@@ -7,9 +7,7 @@ class Twiterator
     cursor = nil
     result = @type.call(cursor, puller_rules)
     while true do
-      if result == cursor
-        break
-      elsif  result == 0
+      if result == cursor || result == 0
         break
       else
         cursor = result
@@ -20,35 +18,25 @@ class Twiterator
 end
 
 SEARCH_ITER = lambda do |cursor, puller_rules|
-    if cursor 
-      puller_rules[:max_id] = cursor 
-    end
+    cursor ? puller_rules[:max_id] = cursor : nil
     @results = $PULLER.pull(puller_rules, &SEARCH_PULL)
     @results.results.last.id
 end
 
 USER_TWEETS_ITER = lambda do |cursor, puller_rules|
-    if cursor
-      puller_rules[:max_id] = cursor 
-    end
+    cursor ? puller_rules[:max_id] = cursor : nil
     @result = $PULLER.pull(puller_rules, &USER_TWEETS_PULL)
     @result.last.id
 end
 
 FOLLOWERS_ITER = lambda do |cursor, puller_rules|
-    if not cursor
-      puller_rules[:cursor] = -1 
-    else puller_rules[:cursor] = cursor
-    end
+    cursor ? puller_rules[:cursor] = cursor : puller_rules[:cursor] = -1
     @result = $PULLER.pull(puller_rules, &FOLLOWERS_PULL)
     @results.next_cursor
 end
 
 FRIENDS_ITER = lambda do |cursor, puller_rules|
-  if not cursor 
-    puller_rules[:cursor] = -1 
-  else puller_rules[:cursor] = cursor
-  end
+  cursor ? puller_rules[:cursor] = cursor : puller_rules[:cursor] = -1
   @results = $PULLER.pull(puller_rules, &FRIENDS_PULL)
   @results.next_cursor
 end
