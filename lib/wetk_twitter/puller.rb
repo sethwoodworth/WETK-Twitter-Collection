@@ -56,9 +56,6 @@ end
 
 FOLLOWERS_PULL = lambda do |rules, base|
   @results = base.followers(rules)
-  @results.users.each do
-    #send follower info (and user id?) to Saver
-  end
   @results
 end
 
@@ -72,9 +69,6 @@ end
 
 FRIENDS_PULL = lambda do |rules, base|
   @results = base.friends(rules)
-  @results.users.each do
-    #send friend info (and user id?) to Saver
-  end
   @results
 end
 
