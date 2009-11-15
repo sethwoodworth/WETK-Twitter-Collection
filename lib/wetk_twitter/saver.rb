@@ -9,7 +9,7 @@
 class Saver
   attr_accessor :rules
   
-  def initialize(rules = {:check_validation => false, :create_relationships => false, :language_detect => false, :tag => nil})
+  def initialize(rules = {:check_validation => false, :language_detect => false, :tag => nil})
     @rules = rules
   end
 
