@@ -1,35 +1,30 @@
 class Puller
-  attr_accessor :rules, :base
+  attr_accessor :base
     
     def initialize(base = nil)
       @base = base
     end
     
     def pull(rules, &pull_type)
-      # begin
         @rules = rules.dup
+      begin
         pull_type.call(@rules, @base)
+      # rescue Twitter::Unauthorized  
       # rescue Twitter::Unavailable
-      #          raise Twitter::Unavailable
-      #       rescue Twitter::NotFound
-      #          raise Twitter::NotFound
-      #       rescue Crack::ParseError
-      #          raise Crack::ParseError
-      #       rescue Errno::ETIMEDOUT
-      #         log.error "Puller: pull timed out, retrying in 10"
-      #         sleep 10
-      #         retry
-      #       rescue Twitter::InformTwitter
-      #         log.error "Puller: Twitter 500 error"
-      #         sleep 100
-      #         retry
-      # end
-      
-      # handle bad json from twitter
-    
-      # call the saver, pass in results one at a time
-      
-      # pass the last id back to the iterator?
+      #   raise Twitter::Unavailable
+      # rescue Twitter::NotFound
+      #   raise Twitter::NotFound
+      # rescue Crack::ParseError
+      #   raise Crack::ParseError
+      # rescue Errno::ETIMEDOUT
+      #   log.error "Puller: pull timed out, retrying in 10"
+      #   sleep 10
+      #   retry
+      # rescue Twitter::InformTwitter
+      #   log.error "Puller: Twitter 500 error"
+      #   sleep 100
+      #   retry
+      end
     end
     
     
