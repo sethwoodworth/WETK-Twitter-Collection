@@ -6,20 +6,18 @@ class Twiterator
   def twiterate(my_rules = {},puller_rules = {})
     my_rules[:cursor] = nil
     result = @type.call(my_rules, puller_rules)
-    while true do
-      if result == my_rules[:cursor] || result == 0
-        break
-      else
-        my_rules[:cursor] = result
-      end
+    while result != my_rules[:cursor] && result != 0 do
+      my_rules[:cursor] = result
       result = @type.call(my_rules, puller_rules)
     end
   end
 end
 
 SEARCH_ITER = lambda do |my_rules, puller_rules|
+    
     my_rules[:cursor] ? puller_rules[:max_id] = my_rules[:cursor] : nil
     @results = $PULLER.pull(puller_rules, &SEARCH_PULL)
+    my_rules[:collect_users] == true ? @results.results.each do |tweet| $CRAWLER.append(tweet.from_user) end : nil
     @results.results.last.id
 end
 

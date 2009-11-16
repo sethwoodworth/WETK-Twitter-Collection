@@ -8,7 +8,6 @@ class Puller
     def pull(rules, &pull_type)
       # begin
         @rules = rules.dup
-        @rules[:user_agent] = "Web_Ecology_Project"
         pull_type.call(@rules, @base)
       # rescue Twitter::Unavailable
       #          raise Twitter::Unavailable
@@ -39,7 +38,9 @@ end
 
 SEARCH_PULL = lambda do |rules, base|
   @search_query = rules.delete(:search_query)
-  @results = Twitter::Search.new(@search_query, rules).per_page(100).fetch
+  @results = Twitter::Search.new(@search_query, rules).per_page(100)
+  rules[:max_id] ? @results.max(rules.delete(:max_id)) : nil
+  @results = @results.fetch
   @results.results.each do |result|
     result.status_id = result.id        
     $SAVER.save(result, &TWEET_SAVE)
@@ -60,10 +61,9 @@ FOLLOWERS_PULL = lambda do |rules, base|
 end
 
 FOLLOWER_IDS_PULL = lambda do |rules, base|
+  @collect = rules.delete(:collect_users)
   @results = base.follower_ids(rules)
-  @results.each do
-    #send follower id (and user id?) to Saver
-  end
+  @collect ? @results.each do |user_id| $CRAWLER.append(user_id) end : nil
   @results
 end
 
@@ -73,10 +73,9 @@ FRIENDS_PULL = lambda do |rules, base|
 end
 
 FRIEND_IDS_PULL = lambda do |rules, base|
+  @collect = rules.delete(:collect_users)
   @results = base.friend_ids(rules)
-  @results.each do
-    #send follower id (and user id?) to Saver
-  end
+  @collect ? @results.each do |user_id| $CRAWLER.append(user_id) end : nil
   @results
 end
 

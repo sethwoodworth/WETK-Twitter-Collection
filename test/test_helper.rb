@@ -8,6 +8,7 @@ require 'activerecord'
 require 'acts-as-taggable-on'
 require 'twitter'
 require 'fakewebs'
+require 'rr'
 
 
 
@@ -15,6 +16,7 @@ require 'fakewebs'
 require "#{File.dirname(__FILE__)}/../lib/wetk_twitter"
 
 class Test::Unit::TestCase
+  include RR::Adapters::TestUnit
 end
 
 
