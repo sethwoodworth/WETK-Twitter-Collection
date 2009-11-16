@@ -6,7 +6,7 @@ class CrawlerTest < Test::Unit::TestCase
       $CRAWLER = Crawler.new([15019521])
       @base = Twitter::Base.new(Twitter::HTTPAuth.new('sam1vp', 'twAg60307', :user_agent => 'web_ecology_project'))
       $PULLER = Puller.new(@base)
-      $TWITERATOR = Twiterator.new(&SEARCH_ITER)
+      $TWITERATOR = Twiterator.new()
       $SAVER = Saver.new
     end
     should "convert the array into a hash" do

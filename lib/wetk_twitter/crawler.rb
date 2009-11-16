@@ -23,8 +23,7 @@ class Crawler
   end
   
   def search_crawl(search_query)
-    $TWITERATOR.type = SEARCH_ITER
-    $TWITERATOR.twiterate({:collect_users => true}, {:search_query => search_query})
+    $TWITERATOR.twiterate({:collect_users => true}, {:search_query => search_query}, &SEARCH_ITER)
     @users.keys
   end
   
@@ -43,12 +42,10 @@ FRIEND_IDS_CRAWL = lambda do |user|
 end
 
 FOLLOWERS_CRAWL = lambda do |user|
-  $TWITERATOR.type = FOLLOWERS_ITER
-  $TWITERATOR.twiterate({:collect_users => true}, {:user_id => user})
+  $TWITERATOR.twiterate({:collect_users => true}, {:user_id => user}, &FOLLOWERS_ITER)
 end
 
 FRIENDS_CRAWL = lambda do |user|
-  $TWITERATOR.type = FRIENDS_ITER
-  $TWITERATOR.twiterate({:collect_users => true}, {:user_id => user})
+  $TWITERATOR.twiterate({:collect_users => true}, {:user_id => user}, &FRIENDS_ITER)
 end
 
