@@ -30,6 +30,12 @@ class CrawlerTest < Test::Unit::TestCase
       $CRAWLER.users = {}
       assert_same_elements ["SamIsMarth", "MarthIsGreat", "EvanIsLucas", "LucasIsCheap"], $CRAWLER.search_crawl('test') 
     end
+    should "be able to crawl 2 depths of followers" do 
+      assert_same_elements [55555,4444,333,22,1,15019521], $CRAWLER.crawl(2, &FOLLOWERS_CRAWL)
+    end
+    should "be able to crawl 2 depths of friends" do 
+       assert_same_elements [55555,4444,333,22,1,15019521], $CRAWLER.crawl(2, &FRIENDS_CRAWL)
+    end
   end
   
   

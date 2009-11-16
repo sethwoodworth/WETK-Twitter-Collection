@@ -41,3 +41,14 @@ end
 FRIEND_IDS_CRAWL = lambda do |user|
   $PULLER.pull({:user_id => user, :collect_users => true}, &FRIEND_IDS_PULL)
 end
+
+FOLLOWERS_CRAWL = lambda do |user|
+  $TWITERATOR.type = FOLLOWERS_ITER
+  $TWITERATOR.twiterate({:collect_users => true}, {:user_id => user})
+end
+
+FRIENDS_CRAWL = lambda do |user|
+  $TWITERATOR.type = FRIENDS_ITER
+  $TWITERATOR.twiterate({:collect_users => true}, {:user_id => user})
+end
+
