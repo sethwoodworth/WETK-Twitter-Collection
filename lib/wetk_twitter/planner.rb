@@ -11,15 +11,5 @@ class Planner
     @crawler.crawl
   end
 
-  def self.db_connect(db_connect)
-    ActiveRecord::Base.establish_connection(YAML::load(File.open(filename))['db_connect'])
-    ActiveRecord::Base.logger = Logger.new(File.open('database.log', 'a'))
-  end
-
-  def self.authenticate_twitter_user(twitter_auth)
-    Twitter::Base.new(Twitter::HTTPAuth.new(twitter_auth['username'], twitter_auth['password'], :user_agent => USER_AGENT))    
-  end
-
-
 
 end
