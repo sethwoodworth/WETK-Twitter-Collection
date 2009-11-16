@@ -1,15 +1,14 @@
 class Planner
-  attr_accessor :saver, :puller, :crawler
   
   def initialize(base, options)
-    @saver = Saver.new(options['saving_rules'])
-    @puller = Puller.new(base)
-    @crawler = Crawler.new(options['crawling_options'])
+    $SAVER = Saver.new(options['saving_rules'])
+    $PULLER = Puller.new(base)
+    $CRAWLER = Crawler.new(options['crawling_options'])
+    $TWITERATOR = Twiterator.new
   end
 
   def pull
-    @crawler.crawl
+    $CRAWLER.crawl
   end
-
 
 end
