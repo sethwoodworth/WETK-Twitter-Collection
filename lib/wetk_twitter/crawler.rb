@@ -1,6 +1,8 @@
 class Crawler
   attr_accessor :users  
-  def initialize(users= [])
+  def initialize(users= [], depth, &crawl_type)
+    @depth = depth
+    @crawl_type = crawl_type
     @users = {}
     users.each do |user|
       @users[user] = 'uncrawled'
