@@ -8,8 +8,6 @@ class Planner
     @options = options
   end
 
-{:search_query => taco, :crawl_type => 'search', :get_info => {:user_tweets => true, :user_info => true}}
-
 
   def pull
     @user_list = $CRAWLER.crawl
