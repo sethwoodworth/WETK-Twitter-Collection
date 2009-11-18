@@ -6,6 +6,7 @@ class Puller
     end
     
     def pull(rules, &pull_type)
+      
         @rules = rules.dup
       begin
         pull_type.call(@rules, @base)

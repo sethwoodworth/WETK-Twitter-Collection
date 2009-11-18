@@ -1,18 +1,23 @@
 require 'ruby-debug'
 class Crawler
   attr_accessor :users, :depth, :crawl_type  
-  def initialize(users= [], depth = 0, &crawl_type)
+  def initialize(users = [], depth = 0, crawl_type = nil)
     @depth = depth
-    @crawl_type = crawl_type
+    @crawl_type = crawl_type_str_to_proc(crawl_type)
     @users = {}
     users.each do |user|
       @users[user] = 'uncrawled'
     end
   end
   
+  def crawl_type_str_to_proc(str)
+    proc_dict = {'followers' => FOLLOWERS_CRAWL}
+    proc_dict[str]
+  end
 # crawl type = RT_TO_USER_CRAWL, RT_FROM_USER_CRAWL, 'mention_to_user' 'mention_from_user', 'reply_to_user', 'reply_from_user','followers', 'friends', 
   
   def crawl(search_query = nil)
+
     if not @users.empty?
       while @depth > 0
         @users.dup.each do |user_array|

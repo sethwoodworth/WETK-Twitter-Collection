@@ -5,11 +5,10 @@ class Planner
   def initialize(base, options)
     $SAVER = Saver.new(options['saving_rules'])
     $PULLER = Puller.new(base)
-    $CRAWLER = Crawler.new(options['crawling_options'])
+    $CRAWLER = Crawler.new(options['query']['users'], options['crawling_options']['depth'], options['crawling_options']['crawl_type'])
     $TWITERATOR = Twiterator.new
     @options = options
   end
-
 
   def pull
     @user_list = $CRAWLER.crawl
@@ -18,10 +17,6 @@ class Planner
     else
       get_info(@user_list)
     end
-  end
-
-  def crawl
-
   end
 
   def get_info(users)

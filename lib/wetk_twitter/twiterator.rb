@@ -2,6 +2,7 @@ class Twiterator
   def initialize()
   end
   def twiterate(my_rules = {},puller_rules = {}, &type)
+    
     my_rules[:cursor] = nil
     result = type.call(my_rules, puller_rules)
     while result != my_rules[:cursor] && result != 0 do
