@@ -1,3 +1,4 @@
+require 'wetk_twitter/search_user'
 require 'wetk_twitter/puller'
 require 'wetk_twitter/crawler'
 require 'wetk_twitter/twiterator'

@@ -21,16 +21,23 @@ class Planner
 
   def get_info(users)
     if options['info_to_get']['user_tweets']
-      users.each do |user|
-        $TWITERATOR.twiterate({}, {:user_id => user}, &USER_TWEETS_ITER)
+      users[by_screen_name].each do |user|
+          $TWITERATOR.twiterate({}, {:screen_name => user}, &USER_TWEETS_ITER)
+      end
+      users[by_id].each do |user|
+        $TWITERATOR.twiterate({}, {:user_id => user}, &USER_TWEETS_ITER)        
       end
     end
     if options['info_to_get']['user_info'] && $CRAWLER.crawl_type != FOLLOWERS_CRAWL && $CRAWLER.crawl_type != FRIENDS_CRAWL
-      users.each do |user|
+      users[by_screen_name].each do |user|
+        $PULLER.pull({:screen_name => user}, &USER_INFO_PULL)
+      end
+      users[by_screen_name].each do |user|
         $PULLER.pull({:user_id => user}, &USER_INFO_PULL)
       end
     end
   end
+  
   
   def search_term
     
