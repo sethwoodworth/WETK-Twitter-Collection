@@ -42,6 +42,7 @@ TWEET_SAVE = lambda do |tweet_to_save, rules|
 
 end
 TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
+  puts "twitter account save"
   twitter_account = TwitterAccount.new(:twitter_id => twitter_account_to_save.id,
                         :name => twitter_account_to_save.name, 
                         :screen_name => twitter_account_to_save.screen_name, 
@@ -54,7 +55,7 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
                         :statuses_count => twitter_account_to_save.statuses_count, 
                         :friends_count => twitter_account_to_save.friends_count, 
                         :profile_background_image_url => twitter_account_to_save.profile_background_image_url, 
-                        :profile_background_title => twitter_account_to_save.profile_background_title,
+                        # :profile_background_title => twitter_account_to_save.profile_background_title,
                         :favourites_count => twitter_account_to_save.favourites_count, 
                         :time_zone => twitter_account_to_save.time_zone, 
                         :utc_offset => twitter_account_to_save.utc_offset,
@@ -69,7 +70,7 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
                         :twitter_id_for_search => twitter_account_to_save.twitter_id_for_search 
                         )
 
-  rules[:tag] ? twitter_account.tag_list << rules[:tag] : nil
+  # rules[:tag] ? twitter_account.tag_list << rules[:tag] : nil
   twitter_account.save
 
 end
@@ -91,7 +92,7 @@ call = Call.new(:query => call_to_save.query,
 end
 
 RELATIONSHIP_SAVE = lambda do |users_to_save, rules|
-
+puts "relationship save"
 
   users_to_save.each_key do |k|
     if k.kind_of?(Hash)
@@ -118,7 +119,7 @@ RELATIONSHIP_SAVE = lambda do |users_to_save, rules|
   #create a new twitter_relationship 
   twitter_relationship = TwitterRelationship.new(:follower_id => follower.id, :friend_id => friend.id)
 
-  rules[:tag] ? twitter_relationship.tag_list << rules[:tag] : nil
+  # rules[:tag] ? twitter_relationship.tag_list << rules[:tag] : nil
   twitter_relationship.save
   #tag relationship  
   #prepend tag with date?  Always tag by date? 

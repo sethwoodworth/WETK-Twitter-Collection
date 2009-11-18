@@ -19,17 +19,17 @@ class Crawler
   end
   
   def crawl_type_str_to_proc(str)
-    proc_dict = {'followers' => FOLLOWERS_CRAWL}
+    proc_dict = {'followers' => FOLLOWERS_CRAWL, 'friends' => FRIENDS_CRAWL, 'follower_ids' => FOLLOWER_IDS_CRAWL, 'friend_ids' => FRIEND_IDS_CRAWL, 'none' => 'no_crawl'}
     proc_dict[str]
   end
-# crawl type = RT_TO_USER_CRAWL, RT_FROM_USER_CRAWL, 'mention_to_user' 'mention_from_user', 'reply_to_user', 'reply_from_user','followers', 'friends', 
+# crawl type = RT_TO_USER_CRAWL, RT_FROM_USER_CRAWL, 'mention_to_user' 'mention_from_user', 'reply_to_user', 'reply_from_user',
   
   def crawl(search_query = nil)
-    unless @users.empty?
+    unless @users.empty? or crawl_type == 'no_crawl'
       while @depth > 0
         @users.dup.each do |user|
           unless user.crawled?
-            @crawl_type.call(user.search, search_query)
+            @crawl_type.call(user, search_query)
             @users.each do |u|
               if u.search == user
                 u.crawled = true
@@ -44,24 +44,29 @@ class Crawler
       end
       # debugger
       # nil
-      @users.collect { |u| u.search }
+      @users  # .collect { |u| u.search }
     end
   
   def search_crawl(search_query)  
   end
   
-  def append(user)
-    @users.each do |u|
-      unless u.search != user
-        #HEY SAM IS THIS WHAT WE SHOULD DO?
-        if user.class = String
-          @users << SearchUser.new(:crawled => false, :by_screen_name => user)          
-        else
-          @users << SearchUser.new(:crawled => false, :by_id => user)
-        end
-      end
-    end
-
+ 
+   def append(user, user_info = nil)
+       @users.each do |u|
+                unless u.search != user
+                  #HEY SAM IS THIS WHAT WE SHOULD DO?
+                  if user.class = String
+                    @user << SearchUser.new(:crawled => false, :by_screen_name => user)          
+                  else
+                    @user << SearchUser.new(:crawled => false, :by_id => user)
+                  end
+                  if user_info
+                    @user.user_info = user_info 
+                  end
+                  @users << @user 
+                end
+              end
+       
   end
   
 end
@@ -81,14 +86,24 @@ FRIEND_IDS_CRAWL = lambda do |user, search_query|
 end
 
 FOLLOWERS_CRAWL = lambda do |user, search_query|
-  if user.class == String
-    $TWITERATOR.twiterate({:collect_users => true}, {:screen_name => user}, &FOLLOWERS_ITER)
+  if not user.user_info
+    user.user_info = $PULLER.pull({:user_id => user.search}, &USER_PULL)
+  end
+  if user.search.class == String
+    $TWITERATOR.twiterate({:collect_users => true, :user_info => user.user_info}, {:screen_name => user.search}, &FOLLOWERS_ITER)
   else
-    $TWITERATOR.twiterate({:collect_users => true}, {:user_id => user}, &FOLLOWERS_ITER)    
+    $TWITERATOR.twiterate({:collect_users => true, :user_info => user.user_info}, {:user_id => user.search}, &FOLLOWERS_ITER)    
   end
 end
 
 FRIENDS_CRAWL = lambda do |user, search_query|
-  $TWITERATOR.twiterate({:collect_users => true}, {:user_id => user}, &FRIENDS_ITER)
+  if not user.user_info
+    user.user_info = $PULLER.pull({:user_id => user.search}, &USER_PULL)
+  end
+  if user.search.class == String
+    $TWITERATOR.twiterate({:collect_users => true, :user_info => user.user_info}, {:screen_name => user.search}, &FRIENDS_ITER)
+  else
+    $TWITERATOR.twiterate({:collect_users => true, :user_info => user.user_info}, {:user_id => user.search}, &FRIENDS_ITER)    
+  end
 end
 
