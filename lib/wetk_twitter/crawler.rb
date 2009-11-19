@@ -4,18 +4,7 @@ class Crawler
   def initialize(users = [], depth = 0, crawl_type = nil)
     @depth = depth
     @crawl_type = crawl_type_str_to_proc(crawl_type)
-    @users = []
-    if users['by_id']
-      users['by_id'].each do |id|
-        @users << SearchUser.new(:by_id => id, :crawled => false)
-      end
-    end
-    if users['by_screen_name']
-      users['by_screen_name'].each do |screen_name|
-        @users << SearchUser.new(:by_screen_name => screen_name, :crawled => false)
-      end
-    end
-
+    @users = users
   end
   
   def crawl_type_str_to_proc(str)

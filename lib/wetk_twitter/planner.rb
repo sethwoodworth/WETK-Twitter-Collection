@@ -1,13 +1,24 @@
 require 'ruby-debug'
 class Planner
-  attr_accessor :options
+  attr_accessor :options, :user_list
   
   def initialize(base, options)
-    $SAVER = Saver.new(options['saving_rules'])
-    $PULLER = Puller.new(base)
-    $CRAWLER = Crawler.new(options['query']['users'], options['crawling_options']['depth'], options['crawling_options']['crawl_type'])
-    $TWITERATOR = Twiterator.new
     @options = options
+    @user_list = []
+    if options['query']['users']['by_id']
+      options['query']['users']['by_id'].each do |id|
+        @user_list << SearchUser.new(:by_id => id, :crawled => false)
+      end
+    end
+    if options['query']['users']['by_screen_name']
+      options['query']['users']['by_screen_name'].each do |screen_name|
+        @user_list << SearchUser.new(:by_screen_name => screen_name, :crawled => false)
+      end
+    end
+    $SAVER = Saver.new(@options['saving_rules'])
+    $PULLER = Puller.new(base)
+    $CRAWLER = Crawler.new(@user_list, @options['crawling_options']['depth'], @options['crawling_options']['crawl_type'])
+    $TWITERATOR = Twiterator.new
   end
 
   def pull
@@ -29,12 +40,15 @@ class Planner
         end
       end
     end
-    if options['info_to_get']['user_info'] && $CRAWLER.crawl_type != FOLLOWERS_CRAWL && $CRAWLER.crawl_type != FRIENDS_CRAWL
-      users[by_screen_name].each do |user|
-        $PULLER.pull({:screen_name => user}, &USER_INFO_PULL)
-      end
-      users[by_screen_name].each do |user|
-        $PULLER.pull({:user_id => user}, &USER_INFO_PULL)
+    if options['info_to_get']['user_info'] 
+      users.each do |user|
+        if not user.user_info
+          if user.by_screen_name
+            $PULLER.pull({:screen_name => user.by_screen_name}, &USER_PULL)
+          else
+            $PULLER.pull({:user_id => user.by_id}, &USER_PULL)
+          end
+        end
       end
     end
   end
