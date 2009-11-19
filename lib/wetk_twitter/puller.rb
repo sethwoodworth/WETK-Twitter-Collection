@@ -47,7 +47,6 @@ end
 
 USER_PULL = lambda do |rules, base|
   puts "USER PULL"
-
   @user_id = rules.delete(:user_id)
   @results = base.user(@user_id, rules)  
   $SAVER.save(@results, &TWITTER_ACCOUNT_SAVE)
@@ -89,8 +88,8 @@ USER_TWEETS_PULL = lambda do |rules, base|
   puts "USER TWEETS PULL"
   rules[:count] = 200
   @results = base.user_timeline(rules)
-  @results.each do
-    #send user tweet to saver
+  @results.each do |result|
+    $SAVER.save(result, &USER_TWEET_SAVE)
   end
   @results
 end
