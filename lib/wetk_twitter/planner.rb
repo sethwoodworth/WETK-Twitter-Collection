@@ -20,6 +20,8 @@ class Planner
   end
 
   def get_info(users)
+    # debugger
+    #     nil
     if options['info_to_get']['user_tweets']
       users[by_screen_name].each do |user|
           $TWITERATOR.twiterate({}, {:screen_name => user}, &USER_TWEETS_ITER)

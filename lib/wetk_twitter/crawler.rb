@@ -30,20 +30,20 @@ class Crawler
         @users.dup.each do |user|
           unless user.crawled?
             @crawl_type.call(user, search_query)
-            @users.each do |u|
-              if u.search == user
-                u.crawled = true
-              end
+           @users.each do |u|
+            if u.search == user
+              u.crawled = true
             end
           end
+        end
         end
         @depth -= 1
       end
       else 
         @crawl_type.call(nil,search_query)
       end
-      # debugger
-      # nil
+      debugger 
+      nil
       @users  # .collect { |u| u.search }
     end
   
@@ -52,22 +52,21 @@ class Crawler
   
  
    def append(user, user_info = nil)
-       @users.each do |u|
-                unless u.search != user
-                  #HEY SAM IS THIS WHAT WE SHOULD DO?
-                  if user.class = String
-                    @user << SearchUser.new(:crawled => false, :by_screen_name => user)          
+       # @users.each do |u|
+       #          unless u.search != user
+                  if user.class == String
+                    @user = SearchUser.new(:crawled => false, :by_screen_name => user)          
                   else
-                    @user << SearchUser.new(:crawled => false, :by_id => user)
+                    @user = SearchUser.new(:crawled => false, :by_id => user)
                   end
                   if user_info
                     @user.user_info = user_info 
                   end
                   @users << @user 
-                end
-              end
+                # end
+              # end
        
-  end
+   end
   
 end
 
