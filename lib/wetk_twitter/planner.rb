@@ -42,7 +42,9 @@ class Planner
     end
     if options['info_to_get']['user_info'] 
       users.each do |user|
+        if not user.user_info
         $PULLER.pull({:user_id => user.search}, &USER_PULL)
+        end
       end
     end
   end

@@ -26,11 +26,7 @@ class Crawler
           end
         end
       end
-<<<<<<< HEAD:lib/wetk_twitter/crawler.rb
-      @users  # .collect { |u| u.search }
-=======
-        @depth -= 1
->>>>>>> 4dde09c990ba16f60ef048bd27c72b5fac9a1857:lib/wetk_twitter/crawler.rb
+      @depth -= 1
     end
     else
       @crawl_type.call(nil,search_query)
