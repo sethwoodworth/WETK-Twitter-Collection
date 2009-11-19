@@ -55,8 +55,20 @@ end
 
 FOLLOWERS_PULL = lambda do |rules, base|
   puts "FOLLOWERS PULL"
-
+  @user = rules.delete(:user)
+  if @user.by_id
+    rules[:user_id] = @user.by_id
+  else
+    rules[:screen_name] = @user.by_screen_name
+  end
   @results = base.followers(rules)
+  @results.users.each do |follower_mash|
+      if rules[:collect_users] == true 
+        $CRAWLER.append(follower_mash.id, follower_mash) 
+      end
+      $SAVER.save(follower_mash, &TWITTER_ACCOUNT_SAVE)
+      $SAVER.save({:friend => @user, :follower => SearchUser.new(:by_id => follower_mash.id, :by_screen_name => follower_mash.screen_name, :user_info => follower_mash)}, &RELATIONSHIP_SAVE)
+  end
   @results
 end
 
@@ -71,7 +83,20 @@ end
 
 FRIENDS_PULL = lambda do |rules, base|
   puts "FRIENDS PULL"
+  @user = rules.delete(:user)
+  if @user.by_id
+    rules[:user_id] = @user.by_id
+  else
+    rules[:screen_name] = @user.by_screen_name
+  end
   @results = base.friends(rules)
+  @results.users.each do |follower_mash|
+      if rules[:collect_users] == true 
+        $CRAWLER.append(follower_mash.id, follower_mash) 
+      end
+      $SAVER.save(follower_mash, &TWITTER_ACCOUNT_SAVE)
+      $SAVER.save({:friend => SearchUser.new(:by_id => follower_mash.id, :by_screen_name => follower_mash.screen_name, :user_info => follower_mash), :follower => @user}, &RELATIONSHIP_SAVE)
+  end
   @results
 end
 

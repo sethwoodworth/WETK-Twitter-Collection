@@ -74,21 +74,13 @@ FOLLOWERS_CRAWL = lambda do |user, search_query|
   if not user.user_info
     user.user_info = $PULLER.pull({:user_id => user.search}, &USER_PULL)
   end
-  if user.search.class == String
-    $TWITERATOR.twiterate({:collect_users => true, :user_info => user.user_info}, {:screen_name => user.search}, &FOLLOWERS_ITER)
-  else
-    $TWITERATOR.twiterate({:collect_users => true, :user_info => user.user_info}, {:user_id => user.search}, &FOLLOWERS_ITER)    
-  end
+  $TWITERATOR.twiterate({}, {:collect_users => true, :user => user}, &FOLLOWERS_ITER)    
 end
 
 FRIENDS_CRAWL = lambda do |user, search_query|
   if not user.user_info
     user.user_info = $PULLER.pull({:user_id => user.search}, &USER_PULL)
   end
-  if user.search.class == String
-    $TWITERATOR.twiterate({:collect_users => true, :user_info => user.user_info}, {:screen_name => user.search}, &FRIENDS_ITER)
-  else
-    $TWITERATOR.twiterate({:collect_users => true, :user_info => user.user_info}, {:user_id => user.search}, &FRIENDS_ITER)    
-  end
+  $TWITERATOR.twiterate({}, {:collect_users => true, :user => user}, &FRIENDS_ITER)    
 end
 

@@ -28,22 +28,12 @@ end
 FOLLOWERS_ITER = lambda do |my_rules, puller_rules|
     my_rules[:cursor] ? puller_rules[:cursor] = my_rules[:cursor] : puller_rules[:cursor] = -1
     @result = $PULLER.pull(puller_rules, &FOLLOWERS_PULL)
-    my_rules[:collect_users] == true ? @results.users.each do |user| $CRAWLER.append(user.id, @result) end : nil
-    @results.users.each do |follower_mash|
-        $SAVER.save(follower_mash, &TWITTER_ACCOUNT_SAVE)
-        $SAVER.save({:friend => my_rules[:user_info], :follower => follower_mash}, &RELATIONSHIP_SAVE)
-    end
     @results.next_cursor
 end
 
 FRIENDS_ITER = lambda do |my_rules, puller_rules|
   my_rules[:cursor] ? puller_rules[:cursor] = my_rules[:cursor] : puller_rules[:cursor] = -1
   @results = $PULLER.pull(puller_rules, &FRIENDS_PULL)
-  my_rules[:collect_users] == true ? @results.users.each do |user| $CRAWLER.append(user.id, @result) end : nil
-  @results.users.each do |friend_mash|
-     $SAVER.save(friend_mash, &TWITTER_ACCOUNT_SAVE)
-     $SAVER.save({:follower => my_rules[:user_info], :friend => friend_mash}, &RELATIONSHIP_SAVE)
-  end
   @results.next_cursor
 end
 
