@@ -118,32 +118,31 @@ call = Call.new(:query => call_to_save.query,
 end
 
 RELATIONSHIP_SAVE = lambda do |users_to_save, rules|
+#Assuming hash of two SearchUser objects  
+#saves a lot of code
 puts "relationship save"
 
-  users_to_save.each_key do |k|
-    if k.kind_of?(Hash)
-      users_to_save[k] = TwitterAccount.convert_from_hash(users_to_save[k])
-    end
-  end
+  # users_to_save.each_key do |k|
+  #   if k.kind_of?(Hash)
+  #     users_to_save[k] = TwitterAccount.convert_from_hash(users_to_save[k])
+  #   end
+  # end
   follower = users_to_save[:follower]
   friend = users_to_save[:friend]      
-  
-  #if it is a hash, convert to object through table_class method
-  # Check for id (OUR ID NOT TWITTER'S) (assume it's in db if it's present)
-  if follower.id 
-  else
-    # Check to see if user exists in db or create new **Skip the check if the db does an auto check for doubles on create
-    follower = TwitterAccount.find_or_create_by_screen_name(follower.screen_name)
-  end
 
-  if friend.id 
-  else
-    # Check to see if user exists in db or create new **Skip the check if the db does an auto check for doubles on create
-    friend = TwitterAccount.find_or_create_by_screen_name(friend.screen_name)
-  end
+  # if follower.user_info.nil?     
+  #   # Check to see if user exists in db or create new **Skip the check if the db does an auto check for doubles on create
+  #   follower.user_info = TwitterAccount.find_or_create_by_screen_name(follower.screen_name)
+  # end
+  # 
+  # if friend.user_info.nil?     
+  #   # Check to see if user exists in db or create new **Skip the check if the db does an auto check for doubles on create
+  #   friend.user_info = TwitterAccount.find_or_create_by_screen_name(friend.screen_name)
+  # end
   
-  #create a new twitter_relationship 
-  twitter_relationship = TwitterRelationship.new(:follower_id => follower.id, :friend_id => friend.id)
+  #create a new twitter_relationship-handle dup check on individual user save 
+  twitter_relationship = TwitterRelationship.new(:follower_id => follower.user_info.id, :friend_id => friend.user_info.id, :current => true)
+
 
   # rules[:tag] ? twitter_relationship.tag_list << rules[:tag] : nil
   twitter_relationship.save

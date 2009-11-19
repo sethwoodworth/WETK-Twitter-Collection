@@ -13,8 +13,8 @@ class TwitterAccount < ActiveRecord::Base
                           :dependent => :destroy
   has_many :followers, :through => :followerships     
   
-  def self.convert_from_hash(hash)
-  
-  end  
+  # def self.convert_from_hash(hash)
+  # 
+  # end  
 
 end
