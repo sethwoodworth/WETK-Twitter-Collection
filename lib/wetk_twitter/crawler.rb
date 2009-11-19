@@ -42,8 +42,6 @@ class Crawler
       else 
         @crawl_type.call(nil,search_query)
       end
-      debugger 
-      nil
       @users  # .collect { |u| u.search }
     end
   
@@ -51,23 +49,22 @@ class Crawler
   end
   
  
-   def append(user, user_info = nil)
-       # @users.each do |u|
-       #          unless u.search != user
-                  if user.class == String
-                    @user = SearchUser.new(:crawled => false, :by_screen_name => user)          
-                  else
-                    @user = SearchUser.new(:crawled => false, :by_id => user)
-                  end
-                  if user_info
-                    @user.user_info = user_info 
-                  end
-                  @users << @user 
-                # end
-              # end
-       
-   end
-  
+  def append(user, user_info = nil)
+    user_search_args = @users.collect do |u|
+      u.search
+    end
+    unless user_search_args.include?(user)
+      if user.class == String
+        @user = SearchUser.new(:crawled => false, :by_screen_name => user)          
+      else
+        @user = SearchUser.new(:crawled => false, :by_id => user)
+      end
+      if user_info
+        @user.user_info = user_info 
+      end
+      @users << @user 
+    end
+  end
 end
 
 SEARCH_CRAWL = lambda do |user, search_query|
