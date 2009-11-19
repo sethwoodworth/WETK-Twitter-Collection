@@ -58,7 +58,7 @@ USER_TWEET_SAVE = lambda do |tweet_to_save, rules|
                    :truncated => tweet_to_save.truncated
                     )
 
-  # rules[:tag] ? tweet.tag_list << rules[:tag] : nil
+  rules[:tag] ? tweet.tag_list << rules[:tag] : nil
 
   tweet.save
   #If not in DB
@@ -96,7 +96,7 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
                         :twitter_id_for_search => twitter_account_to_save.twitter_id_for_search 
                         )
 
-  # rules[:tag] ? twitter_account.tag_list << rules[:tag] : nil
+  rules[:tag] ? twitter_account.tag_list << rules[:tag] : nil
   twitter_account.save
 
 end
@@ -140,7 +140,7 @@ puts "relationship save"
   #   friend.user_info = TwitterAccount.find_or_create_by_screen_name(friend.screen_name)
   # end
   
-  #create a new twitter_relationship-handle dup check on individual user save 
+  #create a new twitter_relationship-handle dup check on individual twitter_account save  
   twitter_relationship = TwitterRelationship.new(:follower_id => follower.user_info.id, :friend_id => friend.user_info.id, :current => true)
 
 
