@@ -42,13 +42,7 @@ class Planner
     end
     if options['info_to_get']['user_info'] 
       users.each do |user|
-        if not user.user_info
-          if user.by_screen_name
-            $PULLER.pull({:screen_name => user.by_screen_name}, &USER_PULL)
-          else
-            $PULLER.pull({:user_id => user.by_id}, &USER_PULL)
-          end
-        end
+        $PULLER.pull({:user_id => user.search}, &USER_PULL)
       end
     end
   end

@@ -52,7 +52,6 @@ class Crawler
                   @users << @user 
                 # end
               # end
-       
    end
   
 end
