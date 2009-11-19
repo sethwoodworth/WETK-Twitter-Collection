@@ -20,14 +20,13 @@ class Planner
   end
 
   def get_info(users)
-    # debugger
-    #     nil
     if options['info_to_get']['user_tweets']
-      users[by_screen_name].each do |user|
-          $TWITERATOR.twiterate({}, {:screen_name => user}, &USER_TWEETS_ITER)
-      end
-      users[by_id].each do |user|
-        $TWITERATOR.twiterate({}, {:user_id => user}, &USER_TWEETS_ITER)        
+      users.each do |user|
+        if user.by_screen_name
+          $TWITERATOR.twiterate({}, {:screen_name => user.by_screen_name}, &USER_TWEETS_ITER)
+        else
+          $TWITERATOR.twiterate({}, {:user_id => user.by_id}, &USER_TWEETS_ITER)        
+        end
       end
     end
     if options['info_to_get']['user_info'] && $CRAWLER.crawl_type != FOLLOWERS_CRAWL && $CRAWLER.crawl_type != FRIENDS_CRAWL

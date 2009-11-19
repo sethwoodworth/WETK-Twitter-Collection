@@ -19,33 +19,31 @@ class Crawler
   end
   
   def crawl_type_str_to_proc(str)
-    proc_dict = {'followers' => FOLLOWERS_CRAWL, 'friends' => FRIENDS_CRAWL, 'follower_ids' => FOLLOWER_IDS_CRAWL, 'friend_ids' => FRIEND_IDS_CRAWL, 'none' => 'no_crawl'}
+    proc_dict = {'followers' => FOLLOWERS_CRAWL, 'friends' => FRIENDS_CRAWL, 'follower_ids' => FOLLOWER_IDS_CRAWL, 'friend_ids' => FRIEND_IDS_CRAWL}
     proc_dict[str]
   end
 # crawl type = RT_TO_USER_CRAWL, RT_FROM_USER_CRAWL, 'mention_to_user' 'mention_from_user', 'reply_to_user', 'reply_from_user',
   
   def crawl(search_query = nil)
-    unless @users.empty? or crawl_type == 'no_crawl'
+    unless @users.empty? 
       while @depth > 0
         @users.dup.each do |user|
           unless user.crawled?
             @crawl_type.call(user, search_query)
-           @users.each do |u|
-            if u.search == user
+            @users.each do |u|
+              if u.search == user
               u.crawled = true
             end
           end
         end
-        end
+      end
         @depth -= 1
-      end
-      else 
-        @crawl_type.call(nil,search_query)
-      end
-      debugger 
-      nil
-      @users  # .collect { |u| u.search }
     end
+    else
+      @crawl_type.call(nil,search_query)
+    end
+    @users  # .collect { |u| u.search }
+  end
   
   def search_crawl(search_query)  
   end

@@ -32,7 +32,33 @@ TWEET_SAVE = lambda do |tweet_to_save, rules|
                    :status_id  => tweet_to_save.status_id
                     )
 
-  rules[:tag] ? tweet.tag_list << rules[:tag] : nil
+  # rules[:tag] ? tweet.tag_list << rules[:tag] : nil
+
+  tweet.save
+  #If not in DB
+  #Active record save
+  #According to rules 
+  #save associations
+
+end
+
+USER_TWEET_SAVE = lambda do |tweet_to_save, rules|
+  # debugger
+  # nil
+  puts "user_tweet_save"
+  tweet = Tweet.new(:text => tweet_to_save.text, 
+                   :time_of_tweet => tweet_to_save.created_at,
+                   :to_user_id => tweet_to_save.in_reply_to_user_id,
+                   :source => tweet_to_save.source,
+                   :profile_image_url => tweet_to_save.user.profile_image_url,     
+                   :to_user => tweet_to_save.in_reply_to_screen_name,
+                   :from_user  => tweet_to_save.user.screen_name,
+                   :twitter_account_id => tweet_to_save.user.id,
+                   :status_id  => tweet_to_save.id,
+                   :truncated => tweet_to_save.truncated
+                    )
+
+  # rules[:tag] ? tweet.tag_list << rules[:tag] : nil
 
   tweet.save
   #If not in DB
