@@ -50,7 +50,6 @@ USER_PULL = lambda do |rules, base|
   @user_id = rules.delete(:user_id)
   @results = base.user(@user_id, rules)  
   $SAVER.save(@results, &TWITTER_ACCOUNT_SAVE)
-  @results
 end
 
 FOLLOWERS_PULL = lambda do |rules, base|
@@ -66,8 +65,8 @@ FOLLOWERS_PULL = lambda do |rules, base|
       if rules[:collect_users] == true 
         $CRAWLER.append(follower_mash.id, follower_mash) 
       end
-      $SAVER.save(follower_mash, &TWITTER_ACCOUNT_SAVE)
-      $SAVER.save({:friend => @user, :follower => SearchUser.new(:by_id => follower_mash.id, :by_screen_name => follower_mash.screen_name, :user_info => follower_mash)}, &RELATIONSHIP_SAVE)
+      db_user_info = $SAVER.save(follower_mash, &TWITTER_ACCOUNT_SAVE)
+      $SAVER.save({:friend => @user, :follower => SearchUser.new(:by_id => follower_mash.id, :by_screen_name => follower_mash.screen_name, :db_user_info => db_user_info)}, &RELATIONSHIP_SAVE)
   end
   @results
 end
@@ -94,8 +93,8 @@ FRIENDS_PULL = lambda do |rules, base|
       if rules[:collect_users] == true 
         $CRAWLER.append(follower_mash.id, follower_mash) 
       end
-      $SAVER.save(follower_mash, &TWITTER_ACCOUNT_SAVE)
-      $SAVER.save({:friend => SearchUser.new(:by_id => follower_mash.id, :by_screen_name => follower_mash.screen_name, :user_info => follower_mash), :follower => @user}, &RELATIONSHIP_SAVE)
+      db_user_info = $SAVER.save(follower_mash, &TWITTER_ACCOUNT_SAVE)
+      $SAVER.save({:friend => SearchUser.new(:by_id => follower_mash.id, :by_screen_name => follower_mash.screen_name, :db_user_info => db_user_info), :follower => @user}, &RELATIONSHIP_SAVE)
   end
   @results
 end
