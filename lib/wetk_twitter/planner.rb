@@ -15,8 +15,7 @@ class Planner
         @user_list << SearchUser.new(:by_screen_name => screen_name, :crawled => false)
       end
     end
-    # debugger
-    # nil
+    
     $SAVER = Saver.new(@options['saving_options'])
     $PULLER = Puller.new(base)
     $CRAWLER = Crawler.new(@user_list, @options['crawling_options']['depth'], @options['crawling_options']['crawl_type'])
