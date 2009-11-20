@@ -7,11 +7,11 @@ class TwitterAccount < ActiveRecord::Base
   has_many :friendships, :foreign_key => 'friend_id',
                           :class_name => 'TwitterRelationship',
                           :dependent => :destroy
-  has_many :friends, :through => :friendships                        
+  has_many :friends, :through => :followerships                        
   has_many :followerships, :foreign_key => 'follower_id',
                           :class_name => 'TwitterRelationship',
                           :dependent => :destroy
-  has_many :followers, :through => :followerships     
+  has_many :followers, :through => :friendships     
   
   # def self.convert_from_hash(hash)
   # 
