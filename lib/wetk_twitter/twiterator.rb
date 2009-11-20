@@ -2,12 +2,16 @@ class Twiterator
   def initialize()
   end
   def twiterate(my_rules = {},puller_rules = {}, &type)
-    
+    if not my_rules[:count]
+      my_rules[:count] = 99999999999999
+    end
+    count = 0 
     my_rules[:cursor] = nil
     result = type.call(my_rules, puller_rules)
-    while result != my_rules[:cursor] && result != 0 do
+    while result[:result] != my_rules[:cursor] && result[:result] != 0 && count < my_rules[:count] do
       my_rules[:cursor] = result
       result = type.call(my_rules, puller_rules)
+      count += result[:count] 
     end
   end
 end
@@ -16,24 +20,24 @@ SEARCH_ITER = lambda do |my_rules, puller_rules|
     my_rules[:cursor] ? puller_rules[:max_id] = my_rules[:cursor] : nil
     @results = $PULLER.pull(puller_rules, &SEARCH_PULL)
     my_rules[:collect_users] == true ? @results.results.each do |tweet| $CRAWLER.append(tweet.from_user) end : nil
-    @results.results.last.id
+    {:result => @results.results.last.id, :count => @results.results.length}
 end
 
 USER_TWEETS_ITER = lambda do |my_rules, puller_rules|
     my_rules[:cursor] ? puller_rules[:max_id] = my_rules[:cursor] : nil
     @result = $PULLER.pull(puller_rules, &USER_TWEETS_PULL)
-    @result.last.id
+    {:result => @result.last.id, :count => @result.length}
 end
 
 FOLLOWERS_ITER = lambda do |my_rules, puller_rules|
     my_rules[:cursor] ? puller_rules[:cursor] = my_rules[:cursor] : puller_rules[:cursor] = -1
     @result = $PULLER.pull(puller_rules, &FOLLOWERS_PULL)
-    @results.next_cursor
+    {:result => @results.next_cursor, :count => @result.length}
 end
 
 FRIENDS_ITER = lambda do |my_rules, puller_rules|
   my_rules[:cursor] ? puller_rules[:cursor] = my_rules[:cursor] : puller_rules[:cursor] = -1
   @results = $PULLER.pull(puller_rules, &FRIENDS_PULL)
-  @results.next_cursor
+  {:result => @results.next_cursor, :count => @result.length}
 end
 

@@ -20,7 +20,7 @@ class Planner
     nil
     $SAVER = Saver.new(@options['saving_options'])
     $PULLER = Puller.new(base)
-    $CRAWLER = Crawler.new(@user_list, @options['crawling_options']['depth'], @options['crawling_options']['crawl_type'])
+    $CRAWLER = Crawler.new(@user_list, @options['crawling_options']['depth'], @options['crawling_options']['crawl_type'], @options['crawling_options']['count'])
     $TWITERATOR = Twiterator.new
   end
 
