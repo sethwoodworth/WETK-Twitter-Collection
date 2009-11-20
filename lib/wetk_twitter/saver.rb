@@ -117,9 +117,7 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
     twitter_account.save
   end                    
 
-
-debugger
-nil
+  twitter_account
 
 end
 CALL_SAVE = lambda do |call_to_save, rules|
