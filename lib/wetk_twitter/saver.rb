@@ -9,8 +9,9 @@
 class Saver
   attr_accessor :rules
   
-  def initialize(rules = {:check_validation => false, :language_detect => false, :tag => nil})
+  def initialize(rules)
     @rules = rules
+    
   end
 
   def save(to_save, &save_type)
@@ -69,7 +70,7 @@ USER_TWEET_SAVE = lambda do |tweet_to_save, rules|
 end
 TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
   puts "twitter account save"
-  twitter_account = TwitterAccount.new(:twitter_id => twitter_account_to_save.id,
+  twitter_account_attribute_hash = {:twitter_id => twitter_account_to_save.id,
                         :name => twitter_account_to_save.name, 
                         :screen_name => twitter_account_to_save.screen_name, 
                         :description => twitter_account_to_save.description, 
@@ -81,7 +82,7 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
                         :statuses_count => twitter_account_to_save.statuses_count, 
                         :friends_count => twitter_account_to_save.friends_count, 
                         :profile_background_image_url => twitter_account_to_save.profile_background_image_url, 
-                        # :profile_background_title => twitter_account_to_save.profile_background_title,
+                        :profile_background_title => twitter_account_to_save.profile_background_title,
                         :favourites_count => twitter_account_to_save.favourites_count, 
                         :time_zone => twitter_account_to_save.time_zone, 
                         :utc_offset => twitter_account_to_save.utc_offset,
@@ -93,11 +94,32 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
                         :profile_sidebar_border_color => twitter_account_to_save.profile_sidebar_border_color,
                         :notifications => twitter_account_to_save.notifications,
                         :verified => twitter_account_to_save.verified,
-                        :twitter_id_for_search => twitter_account_to_save.twitter_id_for_search 
-                        )
+                        :twitter_id_for_search => twitter_account_to_save.twitter_id_for_search}
 
-  rules[:tag] ? twitter_account.tag_list << rules[:tag] : nil
-  twitter_account.save
+  twitter_account = TwitterAccount.new(twitter_account_attribute_hash)
+
+  twitter_account_from_find = TwitterAccount.find_by_screen_name(twitter_account.screen_name)
+
+  if twitter_account_from_find
+    twitter_account = twitter_account_from_find
+    unless rules['tags'].nil?
+      rules['tags'].each do |tag_name, tag_value|
+        twitter_account.tag_list << tag_value
+      end
+    end
+    twitter_account.update_attributes(twitter_account_attribute_hash)  
+  else
+    unless rules['tags'].nil?
+      rules['tags'].each do |tag_name, tag_value|
+        twitter_account.tag_list << tag_value
+      end
+    end
+    twitter_account.save
+  end                    
+
+
+debugger
+nil
 
 end
 CALL_SAVE = lambda do |call_to_save, rules|
@@ -141,7 +163,7 @@ puts "relationship save"
   # end
   
   #create a new twitter_relationship-handle dup check on individual twitter_account save  
-  twitter_relationship = TwitterRelationship.new(:follower_id => follower.user_info.id, :friend_id => friend.user_info.id, :current => true)
+  twitter_relationship = TwitterRelationship.new(:follower_id => follower.db_user_info.id, :friend_id => friend.db_user_info.id, :current => true)
 
 
   # rules[:tag] ? twitter_relationship.tag_list << rules[:tag] : nil
