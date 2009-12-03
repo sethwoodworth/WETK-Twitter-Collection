@@ -9,15 +9,13 @@
 class Saver
   attr_accessor :rules
   
-  def initialize(rules)
+  def initialize(rules = {})
     @rules = rules
-    
   end
 
   def save(to_save, &save_type)
-    save_type.call(to_save, rules)
+    save_type.call(to_save, rules)    
   end
-  
 end
 
 TWEET_SAVE = lambda do |tweet_to_save, rules|
@@ -33,7 +31,11 @@ TWEET_SAVE = lambda do |tweet_to_save, rules|
                    :status_id  => tweet_to_save.status_id
                     )
 
-  # rules[:tag] ? tweet.tag_list << rules[:tag] : nil
+  unless rules['tags'].nil?
+    rules['tags'].each do |tag_name, tag_value|
+      tweet.tag_list << tag_value
+    end
+  end
 
   tweet.save
   #If not in DB
@@ -59,7 +61,11 @@ USER_TWEET_SAVE = lambda do |tweet_to_save, rules|
                    :truncated => tweet_to_save.truncated
                     )
 
-  rules[:tag] ? tweet.tag_list << rules[:tag] : nil
+  unless rules['tags'].nil?
+    rules['tags'].each do |tag_name, tag_value|
+      tweet.tag_list << tag_value
+    end
+  end
 
   tweet.save
   #If not in DB
@@ -114,26 +120,27 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
         twitter_account.tag_list << tag_value
       end
     end
-    # twitter_account.save
+     twitter_account.save
   end                    
 
   twitter_account
 
 end
 CALL_SAVE = lambda do |call_to_save, rules|
-call = Call.new(:query => call_to_save.query,
-                :completed_in =>  call_to_save.completed_in,
-                :since_id => call_to_save.since_id,
-                :max_id => call_to_save.max_id,
-                :refresh_url => call_to_save.refresh_url,
-                :results_per_page => call_to_save.results_per_page,
-                :next_page => call_to_save.next_page,
-                :page => call_to_save.page,
-                :api => call_to_save.api_id)
-
-
-  rules[:tag] ? call.tag_list << rules[:tag] : nil
-                
+  call = Call.new(:query => call_to_save.query,
+                  :completed_in =>  call_to_save.completed_in,
+                  :since_id => call_to_save.since_id,
+                  :max_id => call_to_save.max_id,
+                  :refresh_url => call_to_save.refresh_url,
+                  :results_per_page => call_to_save.results_per_page,
+                  :next_page => call_to_save.next_page,
+                  :page => call_to_save.page,
+                  :api => call_to_save.api_id)
+  unless rules['tags'].nil?
+    rules['tags'].each do |tag_name, tag_value|
+      call.tag_list << tag_value
+    end
+  end
   call.save
 end
 
@@ -161,16 +168,20 @@ RELATIONSHIP_SAVE = lambda do |users_to_save, rules|
   # end
   
   #create a new twitter_relationship-handle dup check on individual twitter_account save  
+
   twitter_relationship = TwitterRelationship.new(:follower_id => follower.db_user_info.id, :friend_id => friend.db_user_info.id, :current => true)
 
 
   # rules[:tag] ? twitter_relationship.tag_list << rules[:tag] : nil
-  twitter_relationship.save
   #tag relationship  
   #prepend tag with date?  Always tag by date? 
   #rules[:tag] ? twitter_relationship.tag_list << rules[:tag] : nil
-
-
+  unless rules['tags'].nil?
+    rules['tags'].each do |tag_name, tag_value|
+      twitter_relationship.tag_list << tag_value
+    end
+  end
+  twitter_relationship.save
 end
 
 
@@ -217,7 +228,12 @@ REACTION_SAVE = lambda do |reaction_to_save, rules|
   tweet_reaction = TweetReaction.new(:tweet_id => tweet.id, :initiator_id => initiator.id, :responder_id  => responder.id)
 
   
-  rules[:tag] ? tweet_reaction.tag_list << rules[:tag] : nil
+  unless rules['tags'].nil?
+    rules['tags'].each do |tag_name, tag_value|
+      tweet_reaction.tag_list << tag_value
+    end
+  end
+
   tweet_reaction.save
 end
 # 

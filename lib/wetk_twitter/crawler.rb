@@ -6,6 +6,7 @@ class Crawler
     @crawl_type = crawl_type_str_to_proc(crawl_type)
     @users = users
     @count = count
+
   end
   
   def crawl_type_str_to_proc(str)
@@ -52,6 +53,7 @@ class Crawler
       if user_info
         @user.user_info = user_info 
       end
+ 
       @users << @user 
     end
   end

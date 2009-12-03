@@ -6,6 +6,7 @@ class TwiteratorTest < Test::Unit::TestCase
       $SAVER = Saver.new
       @base = Twitter::Base.new(Twitter::HTTPAuth.new('sam1vp', 'twAg60307', :user_agent => 'web_ecology_project'))
       $PULLER = Puller.new(@base)
+      @test_user = SearchUser.new(:by_id => 15019521, :user_info => TwitterAccount.new({:twitter_id => 15019521,:screen_name => 'sam1vp'}))
     end
     context "set to search" do
       setup do
@@ -28,7 +29,7 @@ class TwiteratorTest < Test::Unit::TestCase
           @p = Twiterator.new()
         end
         should "be able to iterate through all of a given User's followers" do
-          @p.twiterate({}, {:user_id => 15019521}, &FOLLOWERS_ITER)
+          @p.twiterate({}, {:user => @test_user}, &FOLLOWERS_ITER)
         end
       end
         context "set to friends" do
@@ -36,7 +37,7 @@ class TwiteratorTest < Test::Unit::TestCase
             @p = Twiterator.new()
           end
           should "be able to iterate through all of a given User's friends" do
-            @p.twiterate({}, {:user_id => 15019521}, &FRIENDS_ITER)
+            @p.twiterate({}, {:user => @test_user}, &FRIENDS_ITER)
           end
         end
   end

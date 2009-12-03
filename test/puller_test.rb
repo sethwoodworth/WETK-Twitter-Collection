@@ -7,14 +7,15 @@ class PullerTest < Test::Unit::TestCase
       @base = Twitter::Base.new(Twitter::HTTPAuth.new('sam1vp', 'twAg60307', :user_agent => 'web_ecology_project'))
       @p = Puller.new(@base)
       @user_info_keys = ["created_at", "description", "favourites_count", "followers_count", "following", "friends_count", "geo_enabled", "id", "location", "name", "notifications", "profile_background_color", "profile_background_image_url", "profile_background_tile", "profile_image_url", "profile_link_color", "profile_sidebar_border_color", "profile_sidebar_fill_color", "profile_text_color", "protected", "screen_name", "status", "statuses_count", "time_zone", "url", "utc_offset", "verified"]
+      @test_user = SearchUser.new(:by_id => 15019521, :user_info => TwitterAccount.new({:twitter_id => 15019521,:screen_name => 'sam1vp'}))
     end
   
     should "be able to be created" do
       @p.inspect
     end  
     
-    should "be able to pull followers for a given user_id and cursor" do
-      @results = @p.pull({:user_id => 15019521, :cursor => -1}, &FOLLOWERS_PULL)
+    should "be able to pull followers for a given user and cursor" do
+      @results = @p.pull({:user => @test_user, :cursor => -1}, &FOLLOWERS_PULL)
       assert_same_elements @results.users.first.keys, @user_info_keys
       
     end
@@ -26,8 +27,8 @@ class PullerTest < Test::Unit::TestCase
 
     end
       
-    should "be able to pull friends for a given user_id and cursor" do
-      @results = @p.pull({:user_id => 15019521, :cursor => -1}, &FRIENDS_PULL)
+    should "be able to pull friends for a given user and cursor" do
+      @results = @p.pull({:user => @test_user, :cursor => -1}, &FRIENDS_PULL)
       assert_same_elements @results.users.first.keys, @user_info_keys
     end
         
@@ -50,7 +51,6 @@ class PullerTest < Test::Unit::TestCase
     
     should "be able to pull info from twitter for a user" do
       results = @p.pull({:user_id => 15019521}, &USER_PULL)
-      assert_same_elements results.keys, @user_info_keys
       assert_equal results.screen_name, 'sam1vp'
     end
 
