@@ -46,7 +46,7 @@ SEARCH_PULL = lambda do |rules, base|
 end
 
 USER_PULL = lambda do |rules, base|
-  puts "USER PULL"
+  puts "USER PULL = " + rules[:user_id]
   @user_id = rules.delete(:user_id)
   @results = base.user(@user_id, rules)  
   $SAVER.save(@results, &TWITTER_ACCOUNT_SAVE)

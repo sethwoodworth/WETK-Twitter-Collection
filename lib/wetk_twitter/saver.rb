@@ -69,7 +69,7 @@ USER_TWEET_SAVE = lambda do |tweet_to_save, rules|
 
 end
 TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
-  puts "twitter account save"
+  # puts "twitter account save"
   twitter_account_attribute_hash = {:twitter_id => twitter_account_to_save.id,
                         :name => twitter_account_to_save.name, 
                         :screen_name => twitter_account_to_save.screen_name, 
@@ -114,7 +114,7 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
         twitter_account.tag_list << tag_value
       end
     end
-    twitter_account.save
+    # twitter_account.save
   end                    
 
   twitter_account
@@ -140,7 +140,7 @@ end
 RELATIONSHIP_SAVE = lambda do |users_to_save, rules|
 #Assuming hash of two SearchUser objects  
 #saves a lot of code
-puts "relationship save"
+# puts "relationship save"
 
   # users_to_save.each_key do |k|
   #   if k.kind_of?(Hash)

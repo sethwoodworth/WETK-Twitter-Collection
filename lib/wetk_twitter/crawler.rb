@@ -30,7 +30,7 @@ class Crawler
       @depth -= 1
     end
     else
-      @crawl_type.call(nil,search_query, count)
+      @crawl_type.call(nil,search_query, @count)
     end
     @users  # .collect { |u| u.search }
   end
@@ -75,13 +75,13 @@ FOLLOWERS_CRAWL = lambda do |user, search_query, count|
   if not user.db_user_info
     user.db_user_info = $PULLER.pull({:user_id => user.search}, &USER_PULL)
   end
-  $TWITERATOR.twiterate({}, {:collect_users => true, :user => user, :count => count}, &FOLLOWERS_ITER)    
+  $TWITERATOR.twiterate({:count => count}, {:collect_users => true, :user => user}, &FOLLOWERS_ITER)    
 end
 
 FRIENDS_CRAWL = lambda do |user, search_query, count|
   if not user.db_user_info
     user.db_user_info = $PULLER.pull({:user_id => user.search}, &USER_PULL)
   end
-  $TWITERATOR.twiterate({}, {:collect_users => true, :user => user, :count => count}, &FRIENDS_ITER)    
+  $TWITERATOR.twiterate({ :count => count}, {:collect_users => true, :user => user}, &FRIENDS_ITER)    
 end
 

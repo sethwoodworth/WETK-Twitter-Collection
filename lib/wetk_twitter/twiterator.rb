@@ -9,7 +9,7 @@ class Twiterator
     my_rules[:cursor] = nil
     result = type.call(my_rules, puller_rules)
     while result[:result] != my_rules[:cursor] && result[:result] != 0 && count < my_rules[:count] do
-      my_rules[:cursor] = result
+      my_rules[:cursor] = result[:result]
       result = type.call(my_rules, puller_rules)
       count += result[:count] 
     end
@@ -26,18 +26,34 @@ end
 USER_TWEETS_ITER = lambda do |my_rules, puller_rules|
     my_rules[:cursor] ? puller_rules[:max_id] = my_rules[:cursor] : nil
     @result = $PULLER.pull(puller_rules, &USER_TWEETS_PULL)
-    {:result => @result.last.id, :count => @result.length}
+    {:result => @result.last.id, :count => @results.length}
 end
 
 FOLLOWERS_ITER = lambda do |my_rules, puller_rules|
     my_rules[:cursor] ? puller_rules[:cursor] = my_rules[:cursor] : puller_rules[:cursor] = -1
+    begin
     @result = $PULLER.pull(puller_rules, &FOLLOWERS_PULL)
-    {:result => @results.next_cursor, :count => @result.length}
+    rescue Twitter::InformTwitter
+      retry
+    rescue Twitter::Unavailable
+      retry
+    rescue Twitter::RateLimitExceeded
+      sleep 120
+    end
+    {:result => @results.next_cursor, :count => @results.users.length}
 end
 
 FRIENDS_ITER = lambda do |my_rules, puller_rules|
   my_rules[:cursor] ? puller_rules[:cursor] = my_rules[:cursor] : puller_rules[:cursor] = -1
+  begin
   @results = $PULLER.pull(puller_rules, &FRIENDS_PULL)
-  {:result => @results.next_cursor, :count => @result.length}
+  rescue Twitter::InformTwitter
+    retry
+  rescue Twitter::Unavailable
+    retry
+  rescue Twitter::RateLimitExceeded
+    sleep 120
+  end
+  {:result => @results.next_cursor, :count => @results.users.length}
 end
 
