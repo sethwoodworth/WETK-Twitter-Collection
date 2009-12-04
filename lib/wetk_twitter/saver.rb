@@ -76,7 +76,11 @@ USER_TWEET_SAVE = lambda do |tweet_to_save, rules|
 end
 TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
   # puts "twitter account save"
-  twitter_account_attribute_hash = {:twitter_id => twitter_account_to_save.id,
+  if twitter_account_to_save.class == SearchUser
+    twitter_account_attribute_hash = {:twitter_id => twitter_account_to_save.by_id,
+                                      :screen_name => twitter_account_to_save.by_screen_name}
+  else
+    twitter_account_attribute_hash = {:twitter_id => twitter_account_to_save.id,
                         :name => twitter_account_to_save.name, 
                         :screen_name => twitter_account_to_save.screen_name, 
                         :description => twitter_account_to_save.description, 
@@ -101,6 +105,7 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
                         :notifications => twitter_account_to_save.notifications,
                         :verified => twitter_account_to_save.verified,
                         :twitter_id_for_search => twitter_account_to_save.twitter_id_for_search}
+  end
 
   twitter_account = TwitterAccount.new(twitter_account_attribute_hash)
 
