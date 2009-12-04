@@ -79,6 +79,10 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
   if twitter_account_to_save.class == SearchUser
     twitter_account_attribute_hash = {:twitter_id => twitter_account_to_save.by_id,
                                       :screen_name => twitter_account_to_save.by_screen_name}
+    twitter_account = TwitterAccount.new(twitter_account_attribute_hash)
+
+    twitter_account_from_find = TwitterAccount.find(twitter_account.twitter_id) rescue nil
+                                      
   else
     twitter_account_attribute_hash = {:twitter_id => twitter_account_to_save.id,
                         :name => twitter_account_to_save.name, 
@@ -104,12 +108,13 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
                         :profile_sidebar_border_color => twitter_account_to_save.profile_sidebar_border_color,
                         :notifications => twitter_account_to_save.notifications,
                         :verified => twitter_account_to_save.verified,
-                        :twitter_id_for_search => twitter_account_to_save.twitter_id_for_search}
+                        :twitter_id_for_search => twitter_account_to_save.twitter_id_for_search}    
+    twitter_account = TwitterAccount.new(twitter_account_attribute_hash)
+
+    twitter_account_from_find = TwitterAccount.find_by_screen_name(twitter_account.screen_name)
+
   end
 
-  twitter_account = TwitterAccount.new(twitter_account_attribute_hash)
-
-  twitter_account_from_find = TwitterAccount.find_by_screen_name(twitter_account.screen_name)
 
   if twitter_account_from_find
 
@@ -128,7 +133,7 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
     end
      twitter_account.save
   end                    
-
+  
   twitter_account
 
 end

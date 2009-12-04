@@ -25,8 +25,6 @@ SEARCH_ITER = lambda do |my_rules, puller_rules|
 end
 
 USER_TWEETS_ITER = lambda do |my_rules, puller_rules|
-  debugger
-  nil
 
     my_rules[:cursor] ? puller_rules[:max_id] = my_rules[:cursor] : nil
     @result = $PULLER.pull(puller_rules, &USER_TWEETS_PULL)

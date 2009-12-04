@@ -64,6 +64,16 @@ class Planner
         $TWITERATOR.twiterate({},{:user => user}, &FRIENDS_ITER)
       end
     end
+    if options['info_to_get']['follower_ids'] 
+      users.each do |user|
+        $PULLER.pull({:user => user}, &FOLLOWER_IDS_PULL)
+      end
+    end
+    if options['info_to_get']['friend_ids'] 
+      users.each do |user|
+        $PULLER.pull({:user => user}, &FRIEND_IDS_PULL)
+      end
+    end
     
   end
   

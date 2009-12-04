@@ -65,7 +65,7 @@ FOLLOWERS_PULL = lambda do |rules, base|
       if rules[:collect_users] == true 
         $CRAWLER.append(follower_mash.id, follower_mash) 
       end
-      db_user_info = $SAVER.save(follower_mash, &TWITTER_ACCOUNT_SAVE)
+      db_user_info = $SAVER.save(follower_mash, &TWITTER_ACCOUNT_SAVE)  
       $SAVER.save({:friend => @user, :follower => SearchUser.new(:by_id => follower_mash.id, :by_screen_name => follower_mash.screen_name, :db_user_info => db_user_info)}, &RELATIONSHIP_SAVE)
   end
   @results
@@ -73,12 +73,24 @@ end
 
 FOLLOWER_IDS_PULL = lambda do |rules, base|
   puts "FOLLOWER_IDS PULL"
-  $SAVER.rules[:complete_followers_set] = true
+  @user = rules.delete(:user)
+  unless @user.db_user_info
+    @user.db_user_info = $PULLER.pull({:user_id => @user.search}, &USER_PULL)
+    @user.by_id = @user.db_user_info.twitter_id
+  end
+  rules[:user_id] = @user.by_id
+  $SAVER.rules[:complete_follower_set] = true
   @collect = rules.delete(:collect_users)
   @results = base.follower_ids(rules)
-  @collect ? @results.each do |user_id| $CRAWLER.append(user_id) end : nil
-  $SAVER.rules[:complete_followers_set] = false
-  #call saver
+  @results.each do |user_id| 
+    if @collect 
+      $CRAWLER.append(user_id) 
+    end
+    db_user_info = $SAVER.save(SearchUser.new(:by_id => user_id), &TWITTER_ACCOUNT_SAVE)
+    $SAVER.save({:friend => @user, :follower => SearchUser.new(:by_id => user_id, :db_user_info => db_user_info)}, &RELATIONSHIP_SAVE)
+  end
+  $SAVER.rules[:complete_follower_set] = false
+  
   @results
 end
 
@@ -103,12 +115,24 @@ end
 
 FRIEND_IDS_PULL = lambda do |rules, base|
   puts "FRIEND_IDS PULL"
-  $SAVER.rules[:complete_friends_set] = true
+  @user = rules.delete(:user)
+  unless @user.db_user_info
+    @user.db_user_info = $PULLER.pull({:user_id => @user.search}, &USER_PULL)
+    @user.by_id = @user.db_user_info.twitter_id
+  end
+  rules[:user_id] = @user.by_id
+  $SAVER.rules[:complete_friend_set] = true
   @collect = rules.delete(:collect_users)
   @results = base.friend_ids(rules)
-  @collect ? @results.each do |user_id| $CRAWLER.append(user_id) end : nil
-  $SAVER.rules[:complete_friends_set] = false
-  #call saver
+  @results.each do |user_id| 
+    if @collect 
+      $CRAWLER.append(user_id) 
+    end
+    db_user_info = $SAVER.save(SearchUser.new(:by_id => user_id), &TWITTER_ACCOUNT_SAVE)
+    $SAVER.save({:follower => @user, :friend => SearchUser.new(:by_id => user_id, :db_user_info => db_user_info)}, &RELATIONSHIP_SAVE)
+  end
+  $SAVER.rules[:complete_friend_set] = false
+  
   @results
 end
 
