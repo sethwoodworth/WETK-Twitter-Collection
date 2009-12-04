@@ -2,7 +2,7 @@ class Twiterator
   def initialize()
   end
   def twiterate(my_rules = {},puller_rules = {}, &type)
-    if not my_rules[:count]
+    unless my_rules[:count]
       my_rules[:count] = 99999999999999
     end
     count = 0 
@@ -31,6 +31,9 @@ end
 
 FOLLOWERS_ITER = lambda do |my_rules, puller_rules|
     my_rules[:cursor] ? puller_rules[:cursor] = my_rules[:cursor] : puller_rules[:cursor] = -1
+    unless my_rules[:count]
+      $SAVER.rules[:complete_followers_set] = true
+    end
     begin
     @result = $PULLER.pull(puller_rules, &FOLLOWERS_PULL)
     rescue Twitter::InformTwitter
@@ -40,11 +43,15 @@ FOLLOWERS_ITER = lambda do |my_rules, puller_rules|
     rescue Twitter::RateLimitExceeded
       sleep 120
     end
+    $SAVER.rules[:complete_followers_set] = false
     {:result => @results.next_cursor, :count => @results.users.length}
 end
 
 FRIENDS_ITER = lambda do |my_rules, puller_rules|
   my_rules[:cursor] ? puller_rules[:cursor] = my_rules[:cursor] : puller_rules[:cursor] = -1
+  unless my_rules[:count] 
+    $SAVER.rules[:complete_friends_set] = true
+  end
   begin
   @results = $PULLER.pull(puller_rules, &FRIENDS_PULL)
   rescue Twitter::InformTwitter
@@ -54,6 +61,7 @@ FRIENDS_ITER = lambda do |my_rules, puller_rules|
   rescue Twitter::RateLimitExceeded
     sleep 120
   end
+  $SAVER.rules[:complete_friends_set] = false
   {:result => @results.next_cursor, :count => @results.users.length}
 end
 

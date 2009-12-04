@@ -6,7 +6,8 @@ class TwiteratorTest < Test::Unit::TestCase
       $SAVER = Saver.new
       @base = Twitter::Base.new(Twitter::HTTPAuth.new('sam1vp', 'twAg60307', :user_agent => 'web_ecology_project'))
       $PULLER = Puller.new(@base)
-      @test_user = SearchUser.new(:by_id => 15019521, :user_info => TwitterAccount.new({:twitter_id => 15019521,:screen_name => 'sam1vp'}))
+      db_user_info = TwitterAccount.create({:twitter_id => 15019521,:screen_name => 'sam1vp'})
+      @test_user = SearchUser.new(:by_id => 15019521, :db_user_info => db_user_info)
     end
     context "set to search" do
       setup do

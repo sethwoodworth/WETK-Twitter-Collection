@@ -7,7 +7,8 @@ class PullerTest < Test::Unit::TestCase
       @base = Twitter::Base.new(Twitter::HTTPAuth.new('sam1vp', 'twAg60307', :user_agent => 'web_ecology_project'))
       @p = Puller.new(@base)
       @user_info_keys = ["created_at", "description", "favourites_count", "followers_count", "following", "friends_count", "geo_enabled", "id", "location", "name", "notifications", "profile_background_color", "profile_background_image_url", "profile_background_tile", "profile_image_url", "profile_link_color", "profile_sidebar_border_color", "profile_sidebar_fill_color", "profile_text_color", "protected", "screen_name", "status", "statuses_count", "time_zone", "url", "utc_offset", "verified"]
-      @test_user = SearchUser.new(:by_id => 15019521, :user_info => TwitterAccount.new({:twitter_id => 15019521,:screen_name => 'sam1vp'}))
+      db_user_info = TwitterAccount.create({:twitter_id => 15019521,:screen_name => 'sam1vp'})
+      @test_user = SearchUser.new(:by_id => 15019521, :db_user_info => db_user_info)
     end
   
     should "be able to be created" do
