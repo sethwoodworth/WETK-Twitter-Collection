@@ -16,16 +16,20 @@ class Planner
       end
     end
     @options["saving_options"]["tags"]["execution_tag"] = Time.now.to_i.to_s
-    # debugger
-    #   nil
     $SAVER = Saver.new(@options['saving_options'])
     $PULLER = Puller.new(base)
-    $CRAWLER = Crawler.new(@user_list, @options['crawling_options']['depth'], @options['crawling_options']['crawl_type'], @options['crawling_options']['count'])
+    # debugger
+    # nil
+    unless @options['crawling_options'] == nil
+      $CRAWLER = Crawler.new(@user_list, @options['crawling_options']['depth'], @options['crawling_options']['crawl_type'], @options['crawling_options']['count'])
+    end
     $TWITERATOR = Twiterator.new
     end
 
   def pull
-    @user_list = $CRAWLER.crawl
+    if $CRAWLER
+      @user_list = $CRAWLER.crawl
+    end
     if @user_list.empty? 
       $TWITERATOR.twiterate({}, {:search_query => self.options['query']['search']}, &SEARCH_ITER)
     else
