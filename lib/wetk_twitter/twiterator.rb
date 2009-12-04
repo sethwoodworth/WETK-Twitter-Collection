@@ -29,10 +29,10 @@ USER_TWEETS_ITER = lambda do |my_rules, puller_rules|
     {:result => @result.last.id, :count => @results.length}
 end
 
-FOLLOWERS_ITER = lambda do |my_rules, puller_rules|
+FOLLOWERS_ITER = lambda do |my_rules, puller_rules|  
     my_rules[:cursor] ? puller_rules[:cursor] = my_rules[:cursor] : puller_rules[:cursor] = -1
-    unless my_rules[:count]
-      $SAVER.rules[:complete_followers_set] = true
+    if my_rules[:count] == 99999999999999
+      $SAVER.rules[:complete_follower_set] = true
     end
     begin
     @result = $PULLER.pull(puller_rules, &FOLLOWERS_PULL)
@@ -43,14 +43,14 @@ FOLLOWERS_ITER = lambda do |my_rules, puller_rules|
     rescue Twitter::RateLimitExceeded
       sleep 120
     end
-    $SAVER.rules[:complete_followers_set] = false
+    $SAVER.rules[:complete_follower_set] = false
     {:result => @results.next_cursor, :count => @results.users.length}
 end
 
 FRIENDS_ITER = lambda do |my_rules, puller_rules|
   my_rules[:cursor] ? puller_rules[:cursor] = my_rules[:cursor] : puller_rules[:cursor] = -1
-  unless my_rules[:count] 
-    $SAVER.rules[:complete_friends_set] = true
+  if my_rules[:count] == 99999999999999
+    $SAVER.rules[:complete_friend_set] = true
   end
   begin
   @results = $PULLER.pull(puller_rules, &FRIENDS_PULL)
@@ -61,7 +61,7 @@ FRIENDS_ITER = lambda do |my_rules, puller_rules|
   rescue Twitter::RateLimitExceeded
     sleep 120
   end
-  $SAVER.rules[:complete_friends_set] = false
+  $SAVER.rules[:complete_friend_set] = false
   {:result => @results.next_cursor, :count => @results.users.length}
 end
 

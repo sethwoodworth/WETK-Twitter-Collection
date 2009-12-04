@@ -173,13 +173,12 @@ RELATIONSHIP_SAVE = lambda do |users_to_save, rules|
   # end
   
   #create a new twitter_relationship-handle dup check on individual twitter_account save  
-
   twitter_relationship = TwitterRelationship.new(:follower_id => follower.db_user_info.id, :friend_id => friend.db_user_info.id, :current => true)
   if rules[:complete_friend_set]
     twitter_relationship[:complete_friend_set] = rules[:complete_friend_set]
   end
-  if rules[:complete_followers_set]
-     twitter_relationship[:complete_followers_set] = rules[:complete_followers_set]
+  if rules[:complete_follower_set]
+     twitter_relationship[:complete_follower_set] = rules[:complete_follower_set]
   end
 
   # rules[:tag] ? twitter_relationship.tag_list << rules[:tag] : nil
