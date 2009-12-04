@@ -73,10 +73,12 @@ end
 
 FOLLOWER_IDS_PULL = lambda do |rules, base|
   puts "FOLLOWER_IDS PULL"
-  
+  $SAVER.rules[:complete_followers_set] = true
   @collect = rules.delete(:collect_users)
   @results = base.follower_ids(rules)
   @collect ? @results.each do |user_id| $CRAWLER.append(user_id) end : nil
+  $SAVER.rules[:complete_followers_set] = false
+  #call saver
   @results
 end
 
@@ -101,10 +103,12 @@ end
 
 FRIEND_IDS_PULL = lambda do |rules, base|
   puts "FRIEND_IDS PULL"
-
+  $SAVER.rules[:complete_friends_set] = true
   @collect = rules.delete(:collect_users)
   @results = base.friend_ids(rules)
   @collect ? @results.each do |user_id| $CRAWLER.append(user_id) end : nil
+  $SAVER.rules[:complete_friends_set] = false
+  #call saver
   @results
 end
 
