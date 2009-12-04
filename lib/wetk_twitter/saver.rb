@@ -75,7 +75,7 @@ USER_TWEET_SAVE = lambda do |tweet_to_save, rules|
 
 end
 TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
-  # puts "twitter account save"
+  puts "twitter account save"
   if twitter_account_to_save.class == SearchUser
     twitter_account_attribute_hash = {:twitter_id => twitter_account_to_save.by_id,
                                       :screen_name => twitter_account_to_save.by_screen_name}
@@ -112,6 +112,7 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
   twitter_account_from_find = TwitterAccount.find_by_screen_name(twitter_account.screen_name)
 
   if twitter_account_from_find
+
     twitter_account = twitter_account_from_find
     unless rules['tags'].nil?
       rules['tags'].each do |tag_name, tag_value|

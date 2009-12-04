@@ -49,11 +49,22 @@ class Planner
     end
     if options['info_to_get']['user_info'] 
       users.each do |user|
-        if not user.user_info
-        $PULLER.pull({:user_id => user.search}, &USER_PULL)
+        unless user.user_info
+          $PULLER.pull({:user_id => user.search}, &USER_PULL)
         end
       end
     end
+    if options['info_to_get']['followers'] 
+      users.each do |user|
+        $TWITERATOR.twiterate({},{:user => user}, &FOLLOWERS_ITER)
+      end
+    end
+    if options['info_to_get']['friends'] 
+      users.each do |user|
+        $TWITERATOR.twiterate({},{:user => user}, &FRIENDS_ITER)
+      end
+    end
+    
   end
   
   

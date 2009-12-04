@@ -17,6 +17,7 @@ class Twiterator
 end
 
 SEARCH_ITER = lambda do |my_rules, puller_rules|
+
     my_rules[:cursor] ? puller_rules[:max_id] = my_rules[:cursor] : nil
     @results = $PULLER.pull(puller_rules, &SEARCH_PULL)
     my_rules[:collect_users] == true ? @results.results.each do |tweet| $CRAWLER.append(tweet.from_user) end : nil
@@ -24,12 +25,16 @@ SEARCH_ITER = lambda do |my_rules, puller_rules|
 end
 
 USER_TWEETS_ITER = lambda do |my_rules, puller_rules|
+  debugger
+  nil
+
     my_rules[:cursor] ? puller_rules[:max_id] = my_rules[:cursor] : nil
     @result = $PULLER.pull(puller_rules, &USER_TWEETS_PULL)
     {:result => @result.last.id, :count => @results.length}
 end
 
 FOLLOWERS_ITER = lambda do |my_rules, puller_rules|  
+
     my_rules[:cursor] ? puller_rules[:cursor] = my_rules[:cursor] : puller_rules[:cursor] = -1
     if my_rules[:count] == 99999999999999
       $SAVER.rules[:complete_follower_set] = true
