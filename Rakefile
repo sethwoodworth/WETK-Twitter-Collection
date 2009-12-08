@@ -22,12 +22,12 @@ task :connect do
 end
 
 # this requires the RCOV gem to be installed on your system
-namespace :test do
-  desc "Generate code coverage with rcov"
-  task :coverage do
-    rcov = %(rcov --text-summary -Ilib test/*_test.rb)
-    system rcov
-    system "open doc/coverage/index.html" if PLATFORM['darwin']
-  end
+
+desc "Generate code coverage with rcov"
+task :rcov do
+  rcov = %(rcov --text-summary -Ilib test/*_test.rb)
+  system rcov
+  system "open doc/coverage/index.html" if PLATFORM['darwin']
 end
+
 
