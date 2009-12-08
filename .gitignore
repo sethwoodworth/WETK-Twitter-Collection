@@ -3,3 +3,5 @@ funrun.rb
 funrun_setup.yml
 coverage/
 config/database.yml
+tmp/
+scratch_directory
