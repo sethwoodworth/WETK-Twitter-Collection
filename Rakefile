@@ -1,6 +1,6 @@
 require 'rake/testtask'
-require 'activerecord'
-
+require 'active_record'
+require 'rcov'
 
 task :default => :test
 
@@ -20,3 +20,14 @@ task :connect do
   ActiveRecord::Base.logger = Logger.new(File.open('database.log', 'a'))
   
 end
+
+# this requires the RCOV gem to be installed on your system
+namespace :test do
+  desc "Generate code coverage with rcov"
+  task :coverage do
+    rcov = %(rcov --text-summary -Ilib test/*_test.rb)
+    system rcov
+    system "open doc/coverage/index.html" if PLATFORM['darwin']
+  end
+end
+

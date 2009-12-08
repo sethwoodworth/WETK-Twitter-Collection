@@ -1,4 +1,4 @@
-require "test_helper"
+require "#{File.dirname(__FILE__)}/test_helper"
 
 class SaverTest < Test::Unit::TestCase
   context "A default saver" do

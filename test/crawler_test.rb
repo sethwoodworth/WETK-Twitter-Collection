@@ -1,4 +1,4 @@
-require "test_helper"
+require "#{File.dirname(__FILE__)}/test_helper"
 
 class CrawlerTest < Test::Unit::TestCase
   context "A crawler initialized with a user array" do

@@ -1,4 +1,4 @@
-require 'activerecord'
+require 'active_record'
 require 'acts-as-taggable-on'
 
 #Include modules from acts_as_taggable_on

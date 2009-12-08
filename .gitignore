@@ -1,3 +1,5 @@
 *database.log
 funrun.rb
 funrun_setup.yml
+coverage/
+config/database.yml

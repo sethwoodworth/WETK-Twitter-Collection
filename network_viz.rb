@@ -1,6 +1,6 @@
 $: << File.expand_path(File.dirname(__FILE__) + "/lib")
 require 'rubygems'
-require 'activerecord'
+require 'active_record'
 require 'rubygems'
 require 'acts-as-taggable-on'
 require 'twitter'

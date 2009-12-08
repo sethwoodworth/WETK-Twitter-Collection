@@ -3,11 +3,11 @@ require 'test/unit'
 require 'fakeweb'
 require 'shoulda'
 require 'factory_girl'
-require 'schema'
-require 'activerecord'
+require "#{File.dirname(__FILE__)}/schema"
+require 'active_record'
 require 'acts-as-taggable-on'
 require 'twitter'
-require 'fakewebs'
+require "#{File.dirname(__FILE__)}/fakewebs"
 require 'rr'
 
 

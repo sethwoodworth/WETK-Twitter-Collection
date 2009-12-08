@@ -3,5 +3,5 @@ production:
   encoding: utf8
   reconnect: false
   database: trial
-  username: sgilbert
-  password: Ag60302
+  username: evanburchard
+  password: 

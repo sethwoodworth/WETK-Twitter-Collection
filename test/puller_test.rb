@@ -1,4 +1,4 @@
-require "test_helper"
+require "#{File.dirname(__FILE__)}/test_helper"
 
 class PullerTest < Test::Unit::TestCase
   context "An authenticated default puller" do
