@@ -24,6 +24,7 @@ class Planner
       $CRAWLER = Crawler.new(@user_list, @options['crawling_options']['depth'], @options['crawling_options']['crawl_type'], @options['crawling_options']['count'])
     end
     $TWITERATOR = Twiterator.new
+    setup_logger
     end
 
   def pull
@@ -81,5 +82,22 @@ class Planner
   def search_term
     
   end
+  def setup_logger
+    $LOG = Logger.new(retrieve_log_output)
+    $LOG.level = retrieve_log_level
+    $LOG.info "logger is working"
+  end
   
+  def retrieve_log_level
+   eval "Logger::#{@options['logger']['level']}"
+  end
+  
+  def retrieve_log_output
+    output = @options['logger']['output']
+    if output == "STDOUT" 
+      eval output
+    else
+      output
+    end
+  end
 end
