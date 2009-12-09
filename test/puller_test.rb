@@ -21,8 +21,8 @@ class PullerTest < Test::Unit::TestCase
       
     end
     
-    should "be able to pull an array of user ids for a given user_id" do
-      @results = @p.pull({:user_id => 15019521}, &FOLLOWER_IDS_PULL)
+    should "be able to pull an array of follower ids for a given user_id" do
+      @results = @p.pull({:user => @test_user}, &FOLLOWER_IDS_PULL)
       assert_equal @results.class, Array
       assert_equal @results.first.class, Fixnum
 
@@ -34,7 +34,7 @@ class PullerTest < Test::Unit::TestCase
     end
         
     should "be able to pull an array of friend IDs for a given user_id" do
-      @results = @p.pull({:user_id => 15019521}, &FRIEND_IDS_PULL)
+      @results = @p.pull({:user => @test_user}, &FRIEND_IDS_PULL)
       assert_equal @results.class, Array
       assert_equal @results.first.class, Fixnum
     end
