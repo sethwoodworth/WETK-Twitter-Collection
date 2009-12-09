@@ -16,7 +16,7 @@ class Crawler
 # crawl type = RT_TO_USER_CRAWL, RT_FROM_USER_CRAWL, 'mention_to_user' 'mention_from_user', 'reply_to_user', 'reply_from_user',
   
   def crawl(search_query = nil)
-    unless @users.empty? 
+    unless @users.empty?
       while @depth > 0
         @users.dup.each do |user|
           unless user.crawled?
@@ -60,20 +60,24 @@ class Crawler
 end
 
 SEARCH_CRAWL = lambda do |user, search_query, count|
+  $LOG.info "SEARCH CRAWL"
   $TWITERATOR.twiterate({:collect_users => true}, {:search_query => search_query}, &SEARCH_ITER)
   # @users.keys
   search_query
 end
 
 FOLLOWER_IDS_CRAWL = lambda do |user, search_query, count|
+  $LOG.info "FOLLOWER IDS CRAWL"
   $PULLER.pull({:user_id => user, :collect_users => true}, &FOLLOWER_IDS_PULL)
 end
 
 FRIEND_IDS_CRAWL = lambda do |user, search_query, count|
+  $LOG.info "FRIEND IDS CRAWL"
   $PULLER.pull({:user_id => user, :collect_users => true}, &FRIEND_IDS_PULL)
 end
 
 FOLLOWERS_CRAWL = lambda do |user, search_query, count|
+  $LOG.info "FOLLOWERS CRAWL"
   if not user.db_user_info
     user.db_user_info = $PULLER.pull({:user_id => user.search}, &USER_PULL)
   end
@@ -81,6 +85,7 @@ FOLLOWERS_CRAWL = lambda do |user, search_query, count|
 end
 
 FRIENDS_CRAWL = lambda do |user, search_query, count|
+  $LOG.info "FRIENDS CRAWL"
   if not user.db_user_info
     user.db_user_info = $PULLER.pull({:user_id => user.search}, &USER_PULL)
   end

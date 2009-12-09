@@ -19,6 +19,7 @@ class Saver
 end
 
 TWEET_SAVE = lambda do |tweet_to_save, rules|
+  $LOG.debug "TWEET SAVE"
   tweet = Tweet.new(:text => tweet_to_save.text, 
                    :time_of_tweet => tweet_to_save.created_at,
                    :to_user_id => tweet_to_save.to_user_id,
@@ -46,9 +47,7 @@ TWEET_SAVE = lambda do |tweet_to_save, rules|
 end
 
 USER_TWEET_SAVE = lambda do |tweet_to_save, rules|
-  # debugger
-  # nil
-  puts "user_tweet_save"
+  $LOG.debug "USER TWEET SAVE"
   tweet = Tweet.new(:text => tweet_to_save.text, 
                    :time_of_tweet => tweet_to_save.created_at,
                    :to_user_id => tweet_to_save.in_reply_to_user_id,
@@ -75,7 +74,7 @@ USER_TWEET_SAVE = lambda do |tweet_to_save, rules|
 
 end
 TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
-  puts "twitter account save"
+  $LOG.debug "TWITTER ACCOUNT SAVE"
   if twitter_account_to_save.class == SearchUser
     twitter_account_attribute_hash = {:twitter_id => twitter_account_to_save.by_id,
                                       :screen_name => twitter_account_to_save.by_screen_name}
@@ -138,6 +137,7 @@ TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
 
 end
 CALL_SAVE = lambda do |call_to_save, rules|
+  $LOG.debug "CALL SAVE"
   call = Call.new(:query => call_to_save.query,
                   :completed_in =>  call_to_save.completed_in,
                   :since_id => call_to_save.since_id,
@@ -156,9 +156,9 @@ CALL_SAVE = lambda do |call_to_save, rules|
 end
 
 RELATIONSHIP_SAVE = lambda do |users_to_save, rules|
+    $LOG.debug "RELATIONSHIP SAVE"
 #Assuming hash of two SearchUser objects  
 #saves a lot of code
-# puts "relationship save"
 
   # users_to_save.each_key do |k|
   #   if k.kind_of?(Hash)
@@ -202,6 +202,7 @@ end
 
 
 REACTION_SAVE = lambda do |reaction_to_save, rules|
+  $LOG.debug "REACTION SAVE"
   if reaction_to_save.kind_of?(Hash)
     reaction_to_save.each_key do |k|
       if k.kind_of?(Hash)

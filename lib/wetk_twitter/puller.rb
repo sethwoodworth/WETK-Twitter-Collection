@@ -6,7 +6,6 @@ class Puller
   end
   
   def pull(rules, &pull_type)
-    
       @rules = rules.dup
     begin
       pull_type.call(@rules, @base)
@@ -32,8 +31,7 @@ end
 
 
 SEARCH_PULL = lambda do |rules, base|
-  puts "SEARCH PULL"
-  
+  $LOG.info "SEARCH PULL"
   @search_query = rules.delete(:search_query)
   @results = Twitter::Search.new(@search_query, rules).per_page(100)
   rules[:max_id] ? @results.max(rules.delete(:max_id)) : nil
@@ -46,14 +44,14 @@ SEARCH_PULL = lambda do |rules, base|
 end
 
 USER_PULL = lambda do |rules, base|
-  puts "USER PULL = " + rules[:user_id].to_s
+  $LOG.info "USER PULL FOR " + rules[:user_id].to_s
   @user_id = rules.delete(:user_id)
   @results = base.user(@user_id, rules)  
   $SAVER.save(@results, &TWITTER_ACCOUNT_SAVE)
 end
 
 FOLLOWERS_PULL = lambda do |rules, base|
-  puts "FOLLOWERS PULL"
+  $LOG.info "FOLLOWERS PULL"
   @user = rules.delete(:user)
   if @user.by_id
     rules[:user_id] = @user.by_id
@@ -72,7 +70,7 @@ FOLLOWERS_PULL = lambda do |rules, base|
 end
 
 FOLLOWER_IDS_PULL = lambda do |rules, base|
-  puts "FOLLOWER_IDS PULL"
+  $LOG.info "FOLLOWER IDS PULL"
   @user = rules.delete(:user)
   unless @user.db_user_info
     @user.db_user_info = $PULLER.pull({:user_id => @user.search}, &USER_PULL)
@@ -95,7 +93,7 @@ FOLLOWER_IDS_PULL = lambda do |rules, base|
 end
 
 FRIENDS_PULL = lambda do |rules, base|
-  puts "FRIENDS PULL"
+  $LOG.info "FRIENDS PULL"
   @user = rules.delete(:user)
   if @user.by_id
     rules[:user_id] = @user.by_id
@@ -114,7 +112,7 @@ FRIENDS_PULL = lambda do |rules, base|
 end
 
 FRIEND_IDS_PULL = lambda do |rules, base|
-  puts "FRIEND_IDS PULL"
+  $LOG.info "FRIEND IDS PULL"
   @user = rules.delete(:user)
   unless @user.db_user_info
     @user.db_user_info = $PULLER.pull({:user_id => @user.search}, &USER_PULL)
@@ -137,7 +135,7 @@ FRIEND_IDS_PULL = lambda do |rules, base|
 end
 
 USER_TWEETS_PULL = lambda do |rules, base|
-  puts "USER TWEETS PULL"
+  $LOG.info "USER TWEETS PULL"
   rules[:count] = 200
   @results = base.user_timeline(rules)
   @results.each do |result|
