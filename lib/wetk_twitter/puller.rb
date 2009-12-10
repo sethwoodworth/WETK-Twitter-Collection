@@ -10,20 +10,22 @@ class Puller
     begin
       pull_type.call(@rules, @base)
     # rescue Twitter::Unauthorized  
-    # rescue Twitter::Unavailable
-    #   raise Twitter::Unavailable
-    # rescue Twitter::NotFound
-    #   raise Twitter::NotFound
+    rescue Twitter::Unavailable
+      $LOG.error "ERROR: Twitter unavailable, trying in 60"
+      sleep 60
+      retry
+    rescue Twitter::NotFound
+      $LOG.error "ERROR: Info target not found, trying to skip"
     # rescue Crack::ParseError
     #   raise Crack::ParseError
-    # rescue Errno::ETIMEDOUT
-    #   log.error "Puller: pull timed out, retrying in 10"
-    #   sleep 10
-    #   retry
-    # rescue Twitter::InformTwitter
-    #   log.error "Puller: Twitter 500 error"
-    #   sleep 100
-    #   retry
+    rescue Errno::ETIMEDOUT
+      $LOG.error "ERROR: Puller timed out, retrying in 10"
+      sleep 10
+      retry
+    rescue Twitter::InformTwitter
+      $LOG.error "ERROR: Twitter internal error, retrying in 30"
+      sleep 30
+      retry
     end
   end
 
