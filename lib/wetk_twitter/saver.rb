@@ -67,11 +67,7 @@ USER_TWEET_SAVE = lambda do |tweet_to_save, rules|
   end
 
   tweet.save
-  #If not in DB
-  #Active record save
-  #According to rules 
-  #save associations
-
+  tweet
 end
 TWITTER_ACCOUNT_SAVE = lambda do |twitter_account_to_save, rules|
   $LOG.debug "TWITTER ACCOUNT SAVE"
@@ -157,28 +153,9 @@ end
 
 RELATIONSHIP_SAVE = lambda do |users_to_save, rules|
     $LOG.debug "RELATIONSHIP SAVE"
-#Assuming hash of two SearchUser objects  
-#saves a lot of code
-
-  # users_to_save.each_key do |k|
-  #   if k.kind_of?(Hash)
-  #     users_to_save[k] = TwitterAccount.convert_from_hash(users_to_save[k])
-  #   end
-  # end
   follower = users_to_save[:follower]
   friend = users_to_save[:friend]      
 
-  # if follower.user_info.nil?     
-  #   # Check to see if user exists in db or create new **Skip the check if the db does an auto check for doubles on create
-  #   follower.user_info = TwitterAccount.find_or_create_by_screen_name(follower.screen_name)
-  # end
-  # 
-  # if friend.user_info.nil?     
-  #   # Check to see if user exists in db or create new **Skip the check if the db does an auto check for doubles on create
-  #   friend.user_info = TwitterAccount.find_or_create_by_screen_name(friend.screen_name)
-  # end
-  
-  #create a new twitter_relationship-handle dup check on individual twitter_account save  
   twitter_relationship = TwitterRelationship.new(:follower_id => follower.db_user_info.id, :friend_id => friend.db_user_info.id, :current => true)
   if rules[:complete_friend_set]
     twitter_relationship[:complete_friend_set] = rules[:complete_friend_set]
@@ -187,10 +164,6 @@ RELATIONSHIP_SAVE = lambda do |users_to_save, rules|
      twitter_relationship[:complete_follower_set] = rules[:complete_follower_set]
   end
 
-  # rules[:tag] ? twitter_relationship.tag_list << rules[:tag] : nil
-  #tag relationship  
-  #prepend tag with date?  Always tag by date? 
-  #rules[:tag] ? twitter_relationship.tag_list << rules[:tag] : nil
   unless rules['tags'].nil?
     rules['tags'].each do |tag_name, tag_value|
       twitter_relationship.tag_list << tag_value
@@ -203,46 +176,20 @@ end
 
 REACTION_SAVE = lambda do |reaction_to_save, rules|
   $LOG.debug "REACTION SAVE"
-  if reaction_to_save.kind_of?(Hash)
-    reaction_to_save.each_key do |k|
-      if k.kind_of?(Hash)
-        if users_to_save[k] == :tweet 
-          users_to_save[k] = Tweet.convert_from_hash(users_to_save[k]) 
-        else 
-          users_to_save[k] = TwitterAccount.convert_from_hash(users_to_save[k])
-        end
-      end
-    end
-  end
   
   
   initiator = reaction_to_save[:initiator]
   responder = reaction_to_save[:responder]
   tweet = reaction_to_save[:tweet]
-  #if it is a hash, convert to object through table_class method
+  reaction_type = reaction_to_save[:type]
 
-  # Check for id (OUR ID NOT TWITTER'S) (assume it's in db if it's present)
-  if initiator.id 
-  else
-    # Check to see if user exists in db or create new **Skip the check if the db does an auto check for doubles on create
-    initiator = TwitterAccount.find_or_create_by_screen_name(initiator.screen_name)
-  end
 
-  if responder.id 
-  else
-    # Check to see if user exists in db or create new **Skip the check if the db does an auto check for doubles on create
-    responder = TwitterAccount.find_or_create_by_screen_name(responder.screen_name)
-  end
+  tweet_reaction = TweetReaction.new(:tweet_id => tweet.id, 
+                                     :reaction_id => Reaction.find_by_reaction_type(reaction_type).id, 
+                                     :initiator_id => initiator.db_user_info.id, 
+                                     :responder_id => responder.db_user_info.id)
 
-  if tweet.id 
-  else
-    # Check to see if user exists in db or create new **Skip the check if the db does an auto check for doubles on create
-    tweet = TwitterAccount.find_or_create_by_status_id(tweet.status_id)
-  end
   
-  #create a new twitter_relationship 
-  tweet_reaction = TweetReaction.new(:tweet_id => tweet.id, :initiator_id => initiator.id, :responder_id  => responder.id)
-
   
   unless rules['tags'].nil?
     rules['tags'].each do |tag_name, tag_value|
@@ -252,10 +199,11 @@ REACTION_SAVE = lambda do |reaction_to_save, rules|
 
   tweet_reaction.save
 end
-# 
-# TREND_SAVE = lambda do |trend_to_save, rules|
-# 
-# end
+
+TREND_SAVE = lambda do |trend_to_save, rules|
+  trend = Trend.new(:topic => trend_to_save)
+  trend.save
+end
 # LANGUAGE_SAVE = lambda do |tweet_language_to_save, rules|
 # 
 # end
