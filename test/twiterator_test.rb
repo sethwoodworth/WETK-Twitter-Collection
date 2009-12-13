@@ -8,6 +8,8 @@ class TwiteratorTest < Test::Unit::TestCase
       $PULLER = Puller.new(@base)
       db_user_info = TwitterAccount.create({:twitter_id => 15019521,:screen_name => 'sam1vp'})
       @test_user = SearchUser.new(:by_id => 15019521, :db_user_info => db_user_info)
+      $LOG = Logger.new(STDOUT)
+      $LOG.level = Logger::INFO
     end
     context "set to search" do
       setup do

@@ -8,6 +8,8 @@ class CrawlerTest < Test::Unit::TestCase
       $PULLER = Puller.new(@base)
       $TWITERATOR = Twiterator.new()
       $SAVER = Saver.new
+      $LOG = Logger.new(STDOUT)
+      $LOG.level = Logger::INFO
     end
     # should "convert the array into a hash" do
     #   assert_same_elements $CRAWLER.users, {15019521 => 'uncrawled'} 
