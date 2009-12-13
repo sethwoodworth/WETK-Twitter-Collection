@@ -42,6 +42,7 @@ SEARCH_PULL = lambda do |rules, base|
     result.status_id = result.id        
     $SAVER.save(result, &TWEET_SAVE)
   end
+  rules[:reactions] ? $REACTION_PROCESSOR.process_reactions(@results) : nil
   @results
 end
 
@@ -143,5 +144,6 @@ USER_TWEETS_PULL = lambda do |rules, base|
   @results.each do |result|
     $SAVER.save(result, &USER_TWEET_SAVE)
   end
+  rules[:reactions] ? $REACTION_PROCESSOR.process_reactions(@results) : nil
   @results
 end
