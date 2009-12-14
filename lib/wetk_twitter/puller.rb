@@ -34,15 +34,18 @@ end
 
 SEARCH_PULL = lambda do |rules, base|
   $LOG.info "SEARCH PULL"
+  @tweet_db_objects = []
   @search_query = rules.delete(:search_query)
   @results = Twitter::Search.new(@search_query, rules).per_page(100)
   rules[:max_id] ? @results.max(rules.delete(:max_id)) : nil
   @results = @results.fetch
   @results.results.each do |result|
     result.status_id = result.id        
-    $SAVER.save(result, &TWEET_SAVE)
+    #either add info about the reactions to be saved along with the tweets here
+    @tweet_db_objects << $SAVER.save(result, &TWEET_SAVE)
   end
-  rules[:reactions] ? $REACTION_PROCESSOR.process_reactions(@results) : nil
+  #or pass the tweet_objects in here
+  rules[:reactions] ? $REACTION_PROCESSOR.process_reactions(@tweet_db_objects) : nil
   @results
 end
 
@@ -140,10 +143,11 @@ end
 USER_TWEETS_PULL = lambda do |rules, base|
   $LOG.info "USER TWEETS PULL"
   rules[:count] = 200
+  @tweet_db_objects = []
   @results = base.user_timeline(rules)
   @results.each do |result|
-    $SAVER.save(result, &USER_TWEET_SAVE)
+    @tweet_db_objects << $SAVER.save(result, &USER_TWEET_SAVE)
   end
-  rules[:reactions] ? $REACTION_PROCESSOR.process_reactions(@results) : nil
+  rules[:reactions] ? $REACTION_PROCESSOR.process_reactions(@tweet_db_objects) : nil
   @results
 end
