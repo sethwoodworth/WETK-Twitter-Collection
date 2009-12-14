@@ -51,7 +51,7 @@ class Planner
     if options['info_to_get']['user_info'] 
       users.each do |user|
         unless user.user_info
-          $PULLER.pull({:user_id => user.search}, &USER_PULL)
+          $PULLER.pull({:user => user}, &USER_PULL)
         end
       end
     end

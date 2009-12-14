@@ -53,7 +53,7 @@ class PullerTest < Test::Unit::TestCase
     end
     
     should "be able to pull info from twitter for a user" do
-      results = @p.pull({:user_id => 15019521}, &USER_PULL)
+      results = @p.pull({:user => @test_user}, &USER_PULL)
       assert_equal results.screen_name, 'sam1vp'
     end
 

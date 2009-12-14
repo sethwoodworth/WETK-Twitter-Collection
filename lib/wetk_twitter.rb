@@ -4,6 +4,8 @@ require "#{File.dirname(__FILE__)}/wetk_twitter/crawler"
 require "#{File.dirname(__FILE__)}/wetk_twitter/twiterator"
 require "#{File.dirname(__FILE__)}/wetk_twitter/saver"
 require "#{File.dirname(__FILE__)}/wetk_twitter/planner"
+require "#{File.dirname(__FILE__)}/wetk_twitter/reaction_processor"
+
 
 require "#{File.dirname(__FILE__)}/wetk_twitter/table_classes/api"
 require "#{File.dirname(__FILE__)}/wetk_twitter/table_classes/call"

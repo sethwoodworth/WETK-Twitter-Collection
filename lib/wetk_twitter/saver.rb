@@ -186,8 +186,8 @@ REACTION_SAVE = lambda do |reaction_to_save, rules|
 
   tweet_reaction = TweetReaction.new(:tweet_id => tweet.id, 
                                      :reaction_id => Reaction.find_by_reaction_type(reaction_type).id, 
-                                     :initiator_id => initiator.db_user_info.id, 
-                                     :responder_id => responder.db_user_info.id)
+                                     :initiator_id => initiator.id, 
+                                     :responder_id => responder.id)
 
   
   

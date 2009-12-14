@@ -79,7 +79,7 @@ end
 FOLLOWERS_CRAWL = lambda do |user, search_query, count|
   $LOG.info "FOLLOWERS CRAWL"
   if not user.db_user_info
-    user.db_user_info = $PULLER.pull({:user_id => user.search}, &USER_PULL)
+    user.db_user_info = $PULLER.pull({:user => user}, &USER_PULL)
   end
   $TWITERATOR.twiterate({:count => count}, {:collect_users => true, :user => user}, &FOLLOWERS_ITER)    
 end
@@ -87,7 +87,7 @@ end
 FRIENDS_CRAWL = lambda do |user, search_query, count|
   $LOG.info "FRIENDS CRAWL"
   if not user.db_user_info
-    user.db_user_info = $PULLER.pull({:user_id => user.search}, &USER_PULL)
+    user.db_user_info = $PULLER.pull({:user => user}, &USER_PULL)
   end
   $TWITERATOR.twiterate({ :count => count}, {:collect_users => true, :user => user}, &FRIENDS_ITER)    
 end
