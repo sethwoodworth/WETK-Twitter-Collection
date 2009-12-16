@@ -36,29 +36,29 @@ SEARCH_PULL = lambda do |rules, base|
   $LOG.info "SEARCH PULL"
   @tweet_db_objects = []
   @search_query = rules.delete(:search_query)
-  @results = Twitter::Search.new(@search_query, rules).per_page(100)
-  rules[:max_id] ? @results.max(rules.delete(:max_id)) : nil
-  @results = @results.fetch
-  @results.results.each do |result|
+  @pull_data = Twitter::Search.new(@search_query, rules).per_page(100)
+  rules[:max_id] ? @pull_data.max(rules.delete(:max_id)) : nil
+  @pull_data = @pull_data.fetch
+  @pull_data.results.each do |result|
     result.status_id = result.id        
     #either add info about the reactions to be saved along with the tweets here
     @tweet_db_objects << $SAVER.save(result, &TWEET_SAVE)
   end
   #or pass the tweet_objects in here
   rules[:reactions] ? $REACTION_PROCESSOR.process_reactions(@tweet_db_objects) : nil
-  {:results => @results, :db_objects => @tweet_db_objects}
+  {:pull_data => @pull_data, :db_objects => @tweet_db_objects}
 end
 
 USER_PULL = lambda do |rules, base|
   $LOG.info "USER PULL"
   @user = rules.delete(:user)
   if @user.by_id
-    @results = base.user(@user.by_id, rules)  
+    @pull_data = base.user(@user.by_id, rules)  
   else
-    @results = base.user(@user.by_screen_name, rules)
+    @pull_data = base.user(@user.by_screen_name, rules)
   end
-  $SAVER.save(@results, &TWITTER_ACCOUNT_SAVE)
-  {:results => @results}
+  $SAVER.save(@pull_data, &TWITTER_ACCOUNT_SAVE)
+  {:pull_data => @pull_data}
 end
 
 FOLLOWERS_PULL = lambda do |rules, base|
@@ -69,15 +69,15 @@ FOLLOWERS_PULL = lambda do |rules, base|
   else
     rules[:screen_name] = @user.by_screen_name
   end
-  @results = base.followers(rules)
-  @results.users.each do |follower_mash|
+  @pull_data = base.followers(rules)
+  @pull_data.users.each do |follower_mash|
       if rules[:collect_users] == true 
         $CRAWLER.append(follower_mash.id, follower_mash) 
       end
       db_user_info = $SAVER.save(follower_mash, &TWITTER_ACCOUNT_SAVE)  
       $SAVER.save({:friend => @user, :follower => SearchUser.new(:by_id => follower_mash.id, :by_screen_name => follower_mash.screen_name, :db_user_info => db_user_info)}, &RELATIONSHIP_SAVE)
   end
-  {:results => @results}
+  {:pull_data => @pull_data}
 end
 
 FOLLOWER_IDS_PULL = lambda do |rules, base|
@@ -90,8 +90,8 @@ FOLLOWER_IDS_PULL = lambda do |rules, base|
   rules[:user_id] = @user.by_id
   $SAVER.rules[:complete_follower_set] = true
   @collect = rules.delete(:collect_users)
-  @results = base.follower_ids(rules)
-  @results.each do |user_id| 
+  @pull_data = base.follower_ids(rules)
+  @pull_data.each do |user_id| 
     if @collect 
       $CRAWLER.append(user_id) 
     end
@@ -100,7 +100,7 @@ FOLLOWER_IDS_PULL = lambda do |rules, base|
   end
   $SAVER.rules[:complete_follower_set] = false
   
-  {:results => @results}
+  {:pull_data => @pull_data}
 end
 
 FRIENDS_PULL = lambda do |rules, base|
@@ -111,15 +111,15 @@ FRIENDS_PULL = lambda do |rules, base|
   else
     rules[:screen_name] = @user.by_screen_name
   end
-  @results = base.friends(rules)
-  @results.users.each do |follower_mash|
+  @pull_data = base.friends(rules)
+  @pull_data.users.each do |follower_mash|
       if rules[:collect_users] == true 
         $CRAWLER.append(follower_mash.id, follower_mash) 
       end
       db_user_info = $SAVER.save(follower_mash, &TWITTER_ACCOUNT_SAVE)
       $SAVER.save({:friend => SearchUser.new(:by_id => follower_mash.id, :by_screen_name => follower_mash.screen_name, :db_user_info => db_user_info), :follower => @user}, &RELATIONSHIP_SAVE)
   end
-  {:results => @results}
+  {:pull_data => @pull_data}
 end
 
 FRIEND_IDS_PULL = lambda do |rules, base|
@@ -132,8 +132,8 @@ FRIEND_IDS_PULL = lambda do |rules, base|
   rules[:user_id] = @user.by_id
   $SAVER.rules[:complete_friend_set] = true
   @collect = rules.delete(:collect_users)
-  @results = base.friend_ids(rules)
-  @results.each do |user_id| 
+  @pull_data = base.friend_ids(rules)
+  @pull_data.each do |user_id| 
     if @collect 
       $CRAWLER.append(user_id) 
     end
@@ -141,17 +141,17 @@ FRIEND_IDS_PULL = lambda do |rules, base|
     $SAVER.save({:follower => @user, :friend => SearchUser.new(:by_id => user_id, :db_user_info => db_user_info)}, &RELATIONSHIP_SAVE)
   end
   $SAVER.rules[:complete_friend_set] = false
-  {:results => @results}
+  {:pull_data => @pull_data}
 end
 
 USER_TWEETS_PULL = lambda do |rules, base|
   $LOG.info "USER TWEETS PULL"
   rules[:count] = 200
   @tweet_db_objects = []
-  @results = base.user_timeline(rules)
-  @results.each do |result|
+  @pull_data = base.user_timeline(rules)
+  @pull_data.each do |result|
     @tweet_db_objects << $SAVER.save(result, &USER_TWEET_SAVE)
   end
   rules[:reactions] ? $REACTION_PROCESSOR.process_reactions(@tweet_db_objects) : nil
-  {:results => @results, :db_objects => @tweet_db_objects}
+  {:pull_data => @pull_data, :db_objects => @tweet_db_objects}
 end
