@@ -53,9 +53,3 @@ Factory.define :reaction do |r|
    r.value 0.6
 end
 
-Factory.define :search_user do |u|
-  u.by_id 15019521
-  u.db_user_info {Factory.create(:twitter_account)}
-  u.by_screen_name "sam1vp"
-end
-
