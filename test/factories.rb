@@ -12,8 +12,13 @@ Factory.sequence :screen_name do |n|
   "User#{n}"
 end
 
+Factory.sequence :twitter_id do |n|
+  "11#{n}".to_i
+end
+
 Factory.define :twitter_account do |tw|
     tw.screen_name {Factory.next(:screen_name)}
+    tw.twitter_id {Factory.next(:twitter_id)}
 end
 
 Factory.define :call do |c|
@@ -46,5 +51,11 @@ end
 Factory.define :reaction do |r|
    r.reaction_type "at mention"
    r.value 0.6
+end
+
+Factory.define :search_user do |u|
+  u.by_id 15019521
+  u.db_user_info {Factory.create(:twitter_account)}
+  u.by_screen_name "sam1vp"
 end
 
