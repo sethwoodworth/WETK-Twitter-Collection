@@ -8,6 +8,26 @@ Factory.define :tweet do |t|
     t.status_id {Factory.next(:status_id)}       
 end
 
+Factory.define :retweet1_tweet, :parent => :tweet do |t|
+    t.text "RT @username blah blah blah"
+end
+
+Factory.define :retweet2_tweet, :parent => :tweet do |t|
+    t.text "Someting to tweet about RT @username blah blah blah"
+end
+
+Factory.define :mention_tweet, :parent => :tweet do |t|
+    t.text "Someting to @username tweet about"  
+end
+
+Factory.define :reply_tweet, :parent => :tweet do |t|
+    t.text "@username Someting to tweet about"    
+end
+
+Factory.define :double_mention_tweet, :parent => :tweet do |t|
+    t.text "Someting @username1 to @username2 tweet about" 
+end
+
 Factory.sequence :screen_name do |n|
   "User#{n}"
 end

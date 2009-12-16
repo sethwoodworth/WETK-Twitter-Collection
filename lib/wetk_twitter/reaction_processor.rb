@@ -62,6 +62,9 @@ attr_accessor :rules, :user
       t_copy.slice!(/^#{ru}/)
     end
     rt_screen_names = t_copy.scan(rt_regex)
+    unless rt_screen_names.empty?
+      rt_screen_names.map! do |rt| rt.first end
+    end
     rt_screen_names.each do |rtu|
       t_copy.slice!(/^#{rtu}| #{rtu}/)
     end
@@ -71,7 +74,7 @@ attr_accessor :rules, :user
   end 
 
   def sanitize_screen_names(reply_screen_name, rt_screen_names, mention_screen_names)
-      sanitizing_regex = /([rR][tT])? ?@/
+      sanitizing_regex = / ?([rR][tT])? ?@/
       reply_screen_name ? reply_screen_name.slice!(sanitizing_regex) : nil
       rt_screen_names.each do |rtu| 
         rtu.slice!(sanitizing_regex) 
