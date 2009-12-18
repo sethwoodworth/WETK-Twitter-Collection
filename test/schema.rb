@@ -14,7 +14,7 @@ ActiveRecord::Schema.define(:version => 0) do
   create_table :twitter_accounts do |t|
     t.integer :twitter_id, :limit => 8
     t.integer :twitter_id_for_search, :limit => 8
-    t.string :screen_name, :null => false 
+    t.string :screen_name
     t.string :name 
     t.string :location
     t.text :description

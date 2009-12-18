@@ -24,8 +24,6 @@ class ReactionProcessorTest < Test::Unit::TestCase
     context "given a tweet with 'RT @username ...'" do
       tweet = Factory.build(:retweet1_tweet)
       should "be able to extract a retweet influential" do 
-        debugger
-        nil
         assert_equal "username", @processor.parse_tweet_for_influentials(tweet)[:rt_screen_names].first
       end
     end
