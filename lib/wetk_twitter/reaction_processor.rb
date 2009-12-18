@@ -27,6 +27,7 @@ attr_accessor :rules, :user
           influentials[:rt_screen_names].each do |screen_name|
             save_from(screen_name, tweet, 'retweet')
           end
+          pull_and_save_rts_from
         end
       end
     end
@@ -55,7 +56,7 @@ attr_accessor :rules, :user
   def parse_tweet_for_influentials(tweet)  
     mention_regex = /[@]\w+/
     reply_regex = /^[@]\w+/
-    rt_regex = /(^[Rr][Tt] ?[@]\w+| [Rr][Tt] ?[@]\w+)/  
+    rt_regex = /(^[Rr][Tt] ?[@]\w+(:?)| [Rr][Tt] ?[@]\w+(:?))/  
     t_copy = tweet.text.dup
     reply_screen_name = t_copy.scan(reply_regex)
     reply_screen_name.each do |ru|
@@ -70,7 +71,6 @@ attr_accessor :rules, :user
     end
     mention_screen_names = t_copy.scan(mention_regex)
     sanitize_screen_names(reply_screen_name.first, rt_screen_names, mention_screen_names)
-
   end 
 
   def sanitize_screen_names(reply_screen_name, rt_screen_names, mention_screen_names)
@@ -84,6 +84,7 @@ attr_accessor :rules, :user
       end
       {:reply_screen_name => reply_screen_name, :rt_screen_names => rt_screen_names, :mention_screen_names => mention_screen_names}
   end
+  
   def fill_in_user_info
     if not user.db_user_info
       user.db_user_info = $PULLER.pull({:user=>user}, &USER_PULL)
@@ -101,5 +102,8 @@ attr_accessor :rules, :user
     end
   end
   
+  def pull_and_save_rts_from
+    
+  end
 end
 
